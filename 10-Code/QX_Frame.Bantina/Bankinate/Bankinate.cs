@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 
 
-namespace QX_Frame.Bantina.Data
+namespace QX_Frame.Bantina.Bankinate
 {
     /// <summary>
     /// Bantina Interface
@@ -77,7 +77,7 @@ namespace QX_Frame.Bantina.Data
         {
             if (string.IsNullOrEmpty(ConnString_Default))
             {
-                throw new Exception_DG("ConnString_Default Must Be Declared When Initiation ! -- QX_Frame.Bantina.Data");
+                throw new Exception_DG("ConnString_Default Must Be Declared When Initiation ! -- QX_Frame.Bantina.Bankinate");
             }
             this.ConnectionString_READ = ConnString_Default;
             this.ConnectionString_WRITE = ConnString_Default;
@@ -1098,60 +1098,6 @@ namespace QX_Frame.Bantina.Data
 
         #endregion
 
-        #region Cache Support
-
-        /// <summary>
-        /// Cache Channel
-        /// </summary>
-        /// <param name="tableName">tableName</param>
-        /// <param name="cacheKey">cacheKey</param>
-        /// <param name="func">Func<object></param>
-        /// <returns></returns>
-        private static object CacheChannel(string tableName, string cacheKey, Func<object> func)
-        {
-            /**
-             * author:qixiao
-             * create:2017-8-7 22:47:13
-             * Howw to judge a cache lose efficacy when we update the table data ？
-             * we add another cache name changeCache， let key = tableName，expire time default ，like 1.
-             * once we gain data from cache ， validate changeCache has any value not null.if it is ,regard value changed,we should gain table data renew not from cache.
-             * if it is null , regard as unchanged, if cacheCache expire ,dataCache expired too,we can gain cache relieved
-             * */
-            if (HttpRuntimeCache_Helper_DG.Cache_Get(tableName) == null)
-            {
-                object cacheValue = HttpRuntimeCache_Helper_DG.Cache_Get(cacheKey);
-                if (cacheValue != null)
-                {
-                    return cacheValue;
-                }
-            }
-
-            //Execute Action
-            object result = func();
-
-            HttpRuntimeCache_Helper_DG.Cache_Add(cacheKey, result);
-            HttpRuntimeCache_Helper_DG.Cache_Delete(tableName);
-
-            return result;
-        }
-
-        #endregion
-
-        #region Transaction Support
-        /// <summary>
-        /// Transacation
-        /// </summary>
-        /// <param name="action"></param>
-        public void Transaction(Action action)
-        {
-            using (TransactionScope trans = new TransactionScope())
-            {
-                action();
-                trans.Complete();
-            }
-        }
-        #endregion
-
         #region prepare
 
         /// <summary>
@@ -1391,6 +1337,60 @@ namespace QX_Frame.Bantina.Data
             return property;
         }
 
+        #endregion
+
+        #region Cache Support
+
+        /// <summary>
+        /// Cache Channel
+        /// </summary>
+        /// <param name="tableName">tableName</param>
+        /// <param name="cacheKey">cacheKey</param>
+        /// <param name="func">Func<object></param>
+        /// <returns></returns>
+        private static object CacheChannel(string tableName, string cacheKey, Func<object> func)
+        {
+            /**
+             * author:qixiao
+             * create:2017-8-7 22:47:13
+             * Howw to judge a cache lose efficacy when we update the table data ？
+             * we add another cache name changeCache， let key = tableName，expire time default ，like 1.
+             * once we gain data from cache ， validate changeCache has any value not null.if it is ,regard value changed,we should gain table data renew not from cache.
+             * if it is null , regard as unchanged, if cacheCache expire ,dataCache expired too,we can gain cache relieved
+             * */
+            if (HttpRuntimeCache_Helper_DG.Cache_Get(tableName) == null)
+            {
+                object cacheValue = HttpRuntimeCache_Helper_DG.Cache_Get(cacheKey);
+                if (cacheValue != null)
+                {
+                    return cacheValue;
+                }
+            }
+
+            //Execute Action
+            object result = func();
+
+            HttpRuntimeCache_Helper_DG.Cache_Add(cacheKey, result);
+            HttpRuntimeCache_Helper_DG.Cache_Delete(tableName);
+
+            return result;
+        }
+
+        #endregion
+
+        #region Transaction Support
+        /// <summary>
+        /// Transacation
+        /// </summary>
+        /// <param name="action"></param>
+        public void Transaction(Action action)
+        {
+            using (TransactionScope trans = new TransactionScope())
+            {
+                action();
+                trans.Complete();
+            }
+        }
         #endregion
 
         #region Dispose

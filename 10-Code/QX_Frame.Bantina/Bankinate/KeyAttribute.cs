@@ -11,7 +11,7 @@
  *********************************************************/
 using System;
 
-namespace QX_Frame.Bantina.Data
+namespace QX_Frame.Bantina.Bankinate
 {
     /// <summary>
     /// Self Define Attribute , Support Properties/Class Support Extend Inherit

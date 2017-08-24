@@ -90,12 +90,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\AutoIncreaseAttribute.cs" />
-    <Compile Include="Data\Bankinate.cs" />
-    <Compile Include="Data\ColumnAttribute.cs" />
-    <Compile Include="Data\ForeignAttribute.cs" />
-    <Compile Include="Data\KeyAttribute.cs" />
-    <Compile Include="Data\TableAttribute.cs" />
+    <Compile Include="BankinateAuto\BankinateAuto.cs" />
+    <Compile Include="Bankinate\AutoIncreaseAttribute.cs" />
+    <Compile Include="Bankinate\Bankinate.cs" />
+    <Compile Include="Bankinate\ColumnAttribute.cs" />
+    <Compile Include="Bankinate\ForeignAttribute.cs" />
+    <Compile Include="Bankinate\KeyAttribute.cs" />
+    <Compile Include="Bankinate\TableAttribute.cs" />
     <Compile Include="Cache_Helper_DG.cs" />
     <Compile Include="Code_Helper_DG.cs" />
     <Compile Include="Configs\QX_Frame_Helper_DG_Config.cs" />

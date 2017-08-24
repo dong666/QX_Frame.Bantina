@@ -11,7 +11,7 @@
  *********************************************************/
 using System;
 
-namespace QX_Frame.Bantina.Data
+namespace QX_Frame.Bantina.Bankinate
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public class ForeignKeyAttribute : Attribute { }

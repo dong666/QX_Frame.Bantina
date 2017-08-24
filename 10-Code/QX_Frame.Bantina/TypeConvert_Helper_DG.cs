@@ -180,6 +180,5 @@ namespace CSharp_FlowchartToCode_DG
             }
             return dbType;
         }
-
     }
 }

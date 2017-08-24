@@ -68,7 +68,7 @@ namespace QX_Frame.Bantina.Extends
             {
                 throw new Exception_DG("QX_Frame_Helper_DG_Config.International_ConfigFileLocation must be provide correctly ! -- QX_Frame.Bantina.Extends.Exception_DG line:69");
             }
-            JObject jobject = File_Helper_DG.Json_GetJObjectFromJsonFile(QX_Frame_Helper_DG_Config.International_ConfigFileLocation);//get json configuration file
+            JObject jobject = IO_Helper_DG.Json_GetJObjectFromJsonFile(QX_Frame_Helper_DG_Config.International_ConfigFileLocation);//get json configuration file
             this.Message_DG = jobject[QX_Frame_Helper_DG_Config.International_Language][$"ERROR_{errorCode}"].ToString();
             this.ErrorCode = errorCode;
         }
@@ -79,7 +79,7 @@ namespace QX_Frame.Bantina.Extends
             {
                 throw new Exception_DG("QX_Frame_Helper_DG_Config.International_ConfigFileLocation must be provide correctly ! -- QX_Frame.Bantina.Extends.Exception_DG line:29");
             }
-            JObject jobject = File_Helper_DG.Json_GetJObjectFromJsonFile(QX_Frame_Helper_DG_Config.International_ConfigFileLocation);//get json configuration file
+            JObject jobject = IO_Helper_DG.Json_GetJObjectFromJsonFile(QX_Frame_Helper_DG_Config.International_ConfigFileLocation);//get json configuration file
             this.Message_DG = jobject[QX_Frame_Helper_DG_Config.International_Language][$"ERROR_{errorCode}"].ToString();
             this.ErrorCode = errorCode;
             this.ErrorLevel = errorLevel;

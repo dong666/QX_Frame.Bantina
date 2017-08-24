@@ -91,7 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\AutoIncreaseAttribute.cs" />
-    <Compile Include="Data\Bantina.cs" />
+    <Compile Include="Data\Bankinate.cs" />
     <Compile Include="Data\ColumnAttribute.cs" />
     <Compile Include="Data\ForeignAttribute.cs" />
     <Compile Include="Data\KeyAttribute.cs" />

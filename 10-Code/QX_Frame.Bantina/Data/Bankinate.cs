@@ -30,7 +30,7 @@ namespace QX_Frame.Bantina.Data
     /// <summary>
     /// Bantina Interface
     /// </summary>
-    public interface IBantina
+    public interface IBankinate
     {
         Task<bool> Add<TEntity>(TEntity entity) where TEntity : class;
         Task<bool> Update<TEntity>(TEntity entity) where TEntity : class;
@@ -55,7 +55,7 @@ namespace QX_Frame.Bantina.Data
         List<TEntity> ExecuteStoredProcedureToList<TEntity>(string storedProcedureName, params object[] parms) where TEntity : class;
     }
 
-    public abstract class Bantina : Sql_Helper_DG, IDisposable, IBantina
+    public abstract class Bankinate : Sql_Helper_DG, IDisposable, IBankinate
     {
         /// <summary>
         /// ConnectionString_READ
@@ -73,7 +73,7 @@ namespace QX_Frame.Bantina.Data
         /// <summary>
         /// Bantina
         /// </summary>
-        public Bantina()
+        public Bankinate()
         {
             if (string.IsNullOrEmpty(ConnString_Default))
             {
@@ -87,7 +87,7 @@ namespace QX_Frame.Bantina.Data
         /// Bantina
         /// </summary>
         /// <param name="connString"></param>
-        public Bantina(string connString)
+        public Bankinate(string connString)
         {
             ConnString_Default = connString;
             this.ConnectionString_READ = ConnString_Default;
@@ -99,7 +99,7 @@ namespace QX_Frame.Bantina.Data
         /// </summary>
         /// <param name="connString_RW"></param>
         /// <param name="connString_R"></param>
-        public Bantina(string connString_RW, string connString_R)
+        public Bankinate(string connString_RW, string connString_R)
         {
             ConnString_RW = connString_RW;
             ConnString_R = connString_R;
@@ -1293,7 +1293,7 @@ namespace QX_Frame.Bantina.Data
         /// <summary>
         /// MethodInfo
         /// </summary>
-        private static readonly MethodInfo _foreignQueryEntity = typeof(Bantina).GetMethod("QueryForeignEntity", BindingFlags.NonPublic | BindingFlags.Static);
+        private static readonly MethodInfo _foreignQueryEntity = typeof(Bankinate).GetMethod("QueryForeignEntity", BindingFlags.NonPublic | BindingFlags.Static);
         #endregion
 
         /// <summary>

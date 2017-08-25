@@ -12,13 +12,12 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
+            Dictionary<string, object> dataDic = new Dictionary<string, object>();
+            dataDic.Add("classid", "1");
 
-            using (var db =new DB_QX_Frame_Test())
+
+            using (var db = new DB_QX_Frame_Test())
             {
-                Dictionary<string, object> dataDic = new Dictionary<string, object>();
-                dataDic.Add("uid", Guid.NewGuid());
-                dataDic.Add("name", "wanglaowu");
-
                 if (db.Insert("TB_People", dataDic))
                 {
                     Console.WriteLine(db.Message);

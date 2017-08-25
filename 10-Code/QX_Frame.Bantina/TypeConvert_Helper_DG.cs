@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace CSharp_FlowchartToCode_DG
+namespace QX_Frame.Bantina
 {
     public abstract class TypeConvert_Helper_DG
     {
@@ -10,7 +10,7 @@ namespace CSharp_FlowchartToCode_DG
         /// </summary>
         /// <param name="sqlTypeString"></param>
         /// <returns></returns>
-        public static Type SqlTypeStringToCsharpType(string sqlTypeString)
+        public static Type SqlDbTypeToCsharpType(string sqlTypeString)
         {
             SqlDbType dbType = SqlTypeStringToSqlType(sqlTypeString);
             Type type = SqlDbTypeToCsharpType(dbType);
@@ -27,6 +27,16 @@ namespace CSharp_FlowchartToCode_DG
             SqlDbType dbType = SqlTypeStringToSqlType(sqlTypeString);
             Type type = SqlDbTypeToCsharpType(dbType);
             return type.Name;
+        }
+        /// <summary>
+        /// sql dbtype to csharp type and create default value
+        /// </summary>
+        /// <param name="sqlTypeString"></param>
+        /// <returns></returns>
+        public static object SqlDbTypeToCsharpTypeDefaultValue(string sqlTypeString)
+        {
+            SqlDbType dbType = SqlTypeStringToSqlType(sqlTypeString);
+            return SqlDbTypeToCsharpTypeDefaultValue(dbType);
         }
 
         // SqlDbType转换为C#数据类型
@@ -86,6 +96,68 @@ namespace CSharp_FlowchartToCode_DG
                     return typeof(Object);
                 case SqlDbType.Xml:
                     return typeof(Object);
+                default:
+                    return null;
+            }
+        }
+
+        //get Csharp Type default value from sql DbType
+        private static object SqlDbTypeToCsharpTypeDefaultValue(SqlDbType sqlDbType)
+        {
+            switch (sqlDbType)
+            {
+                case SqlDbType.BigInt:
+                    return default(long);
+                case SqlDbType.Binary:
+                    return default(Object);
+                case SqlDbType.Bit:
+                    return default(Boolean);
+                case SqlDbType.Char:
+                    return "";
+                case SqlDbType.DateTime:
+                    return default(DateTime);
+                case SqlDbType.Decimal:
+                    return default(Decimal);
+                case SqlDbType.Float:
+                    return default(Double);
+                case SqlDbType.Image:
+                    return default(Object);
+                case SqlDbType.Int:
+                    return default(int);
+                case SqlDbType.Money:
+                    return default(Decimal);
+                case SqlDbType.NChar:
+                    return "";
+                case SqlDbType.NText:
+                    return "";
+                case SqlDbType.NVarChar:
+                    return "";
+                case SqlDbType.Real:
+                    return default(Single);
+                case SqlDbType.SmallDateTime:
+                    return default(DateTime);
+                case SqlDbType.SmallInt:
+                    return default(Int16);
+                case SqlDbType.SmallMoney:
+                    return default(Decimal);
+                case SqlDbType.Text:
+                    return "";
+                case SqlDbType.Timestamp:
+                    return default(long);
+                case SqlDbType.TinyInt:
+                    return default(Byte);
+                case SqlDbType.Udt://自定义的数据类型
+                    return default(Object);
+                case SqlDbType.UniqueIdentifier:
+                    return Guid.NewGuid();
+                case SqlDbType.VarBinary:
+                    return default(Object);
+                case SqlDbType.VarChar:
+                    return "";
+                case SqlDbType.Variant:
+                    return default(Object);
+                case SqlDbType.Xml:
+                    return default(Object);
                 default:
                     return null;
             }

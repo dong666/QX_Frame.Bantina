@@ -91,6 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BankinateAuto\BankinateAuto.cs" />
+    <Compile Include="BankinateAuto\FeildName.cs" />
+    <Compile Include="BankinateAuto\ForeignRelatioin.cs" />
+    <Compile Include="BankinateAuto\Opt_TablePrefix.cs" />
+    <Compile Include="BankinateAuto\RecognitedFeildKeyValue.cs" />
+    <Compile Include="BankinateAuto\TableFeildsInfo.cs" />
+    <Compile Include="BankinateAuto\TableIdName.cs" />
+    <Compile Include="BankinateAuto\TableInfo.cs" />
     <Compile Include="Bankinate\AutoIncreaseAttribute.cs" />
     <Compile Include="Bankinate\Bankinate.cs" />
     <Compile Include="Bankinate\ColumnAttribute.cs" />

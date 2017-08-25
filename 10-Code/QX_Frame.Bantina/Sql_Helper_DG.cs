@@ -598,23 +598,30 @@ namespace QX_Frame.Bantina
                         T model1 = System.Activator.CreateInstance<T>();//实例化一个对象，便于往list里填充数据
                         foreach (PropertyInfo propertyInfo in propertyInfos)
                         {
-                            //遍历模型里所有的字段
-                            if (row[propertyInfo.Name] != System.DBNull.Value)
+                            try
                             {
-                                //判断值是否为空，如果空赋值为null见else
-                                if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                                //遍历模型里所有的字段
+                                if (row[propertyInfo.Name] != System.DBNull.Value)
                                 {
-                                    //如果convertsionType为nullable类，声明一个NullableConverter类，该类提供从Nullable类到基础基元类型的转换
-                                    NullableConverter nullableConverter = new NullableConverter(propertyInfo.PropertyType);
-                                    //将convertsionType转换为nullable对的基础基元类型
-                                    propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], nullableConverter.UnderlyingType), null);
+                                    //判断值是否为空，如果空赋值为null见else
+                                    if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                                    {
+                                        //如果convertsionType为nullable类，声明一个NullableConverter类，该类提供从Nullable类到基础基元类型的转换
+                                        NullableConverter nullableConverter = new NullableConverter(propertyInfo.PropertyType);
+                                        //将convertsionType转换为nullable对的基础基元类型
+                                        propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], nullableConverter.UnderlyingType), null);
+                                    }
+                                    else
+                                    {
+                                        propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], propertyInfo.PropertyType), null);
+                                    }
                                 }
                                 else
                                 {
-                                    propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], propertyInfo.PropertyType), null);
+                                    propertyInfo.SetValue(model1, null, null);//如果数据库的值为空，则赋值为null
                                 }
                             }
-                            else
+                            catch (Exception)
                             {
                                 propertyInfo.SetValue(model1, null, null);//如果数据库的值为空，则赋值为null
                             }

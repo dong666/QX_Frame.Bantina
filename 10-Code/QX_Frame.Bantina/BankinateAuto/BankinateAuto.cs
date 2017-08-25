@@ -106,85 +106,78 @@ namespace QX_Frame.Bantina.BankinateAuto
         {
             return this.CommonFlow(tableName, () =>
              {
+                 StringBuilder builder_front = new StringBuilder();
+                 StringBuilder builder_behind = new StringBuilder();
+
+                 List<SqlParameter> sqlParameterList = new List<SqlParameter>();
+
+                 builder_front.Append("INSERT INTO ");
+                 builder_front.Append(tableName);
+                 builder_front.Append(" (");
+                 builder_behind.Append(" VALUES (");
+
+                 foreach (TableFeildInfo feild in this.TableInfo.TableFildsInfoList)
+                 {
+                     if (feild.IsIdentity)
+                     {
+                         goto checkEnd;
+                     }
+                     /**
+                      * 1.search table feild similar in keyValueDic.Keys
+                      * 2.get correct
+                      * */
+                     var keyValueData = RecognitFeildFromDataDictionary(feild.FeildName, keyValueDic);
+
+                     if (keyValueData!=null)
+                     {
+                         builder_front.Append(feild.FeildName);
+                         builder_front.Append(",");
+
+                         builder_behind.Append("@");
+                         builder_behind.Append(feild.FeildName);
+                         builder_behind.Append(",");
+
+                         sqlParameterList.Add(new SqlParameter("@" + feild.FeildName, keyValueData.Value));
+                     }
+                     else
+                     {
+                         // if feild cannot be null
+                        if (feild.Nullable==0)
+                         {
+                             builder_front.Append(feild.FeildName);
+                             builder_front.Append(",");
+
+                             builder_behind.Append("@");
+                             builder_behind.Append(feild.FeildName);
+                             builder_behind.Append(",");
+
+                            sqlParameterList.Add(new SqlParameter("@" + feild.FeildName, TypeConvert_Helper_DG.SqlDbTypeToCsharpTypeDefaultValue(feild.Type)));
+                         }
+                     }
+
+                     checkEnd:
+
+                     //the end
+                     if (this.TableInfo.TableFildsInfoList.LastOrDefault() == feild)
+                     {
+                         builder_front.Remove(builder_front.Length - 1, 1);
+                         builder_front.Append(")");
+
+                         builder_behind.Remove(builder_behind.Length - 1, 1);
+                         builder_behind.Append(")");
+                     }
+                 }
+
+                 //Generate SqlStatement
+                 string sql = builder_front.Append(builder_behind.ToString()).ToString();
+
+                 this.SqlStatement = sql;
+
+                 HttpRuntimeCache_Helper_DG.Cache_Add(tableName, 1);
+
                  this.Message = "add success";
-                 return true;
+                 return ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0; ;
              });
-
-            //Type entityType = typeof(TEntity);
-
-            //string tableName = GetTablaName(entityType);
-
-            //StringBuilder builder_front = new StringBuilder();
-            //StringBuilder builder_behind = new StringBuilder();
-
-            //List<SqlParameter> sqlParameterList = new List<SqlParameter>();
-
-            //builder_front.Append("INSERT INTO ");
-            //builder_front.Append(tableName);
-            //builder_front.Append(" (");
-            //builder_behind.Append(" VALUES (");
-
-            //PropertyInfo[] propertyInfos = entityType.GetProperties();
-            //foreach (PropertyInfo propertyInfo in propertyInfos)
-            //{
-            //    //AutoIncrease : if property is auto increase attribute skip this column.
-            //    if (propertyInfo.GetCustomAttribute(typeof(AutoIncreaseAttribute), true) is AutoIncreaseAttribute autoIncreaseAttr)
-            //    {
-            //        continue;
-            //    }
-
-            //    //key :
-            //    if (propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true) is KeyAttribute keyAttr)
-            //    {
-            //        builder_front.Append(propertyInfo.Name);
-            //        builder_front.Append(",");
-
-            //        builder_behind.Append("@");
-            //        builder_behind.Append(propertyInfo.Name);
-            //        builder_behind.Append(",");
-
-            //        sqlParameterList.Add(new SqlParameter("@" + propertyInfo.Name, propertyInfo.GetValue(entity)));
-            //    }
-
-            //    //Column :
-            //    if (propertyInfo.GetCustomAttribute(typeof(ColumnAttribute), true) is ColumnAttribute columnAttr)
-            //    {
-            //        builder_front.Append(propertyInfo.Name);
-            //        builder_front.Append(",");
-
-            //        builder_behind.Append("@");
-            //        builder_behind.Append(propertyInfo.Name);
-            //        builder_behind.Append(",");
-
-            //        sqlParameterList.Add(new SqlParameter("@" + propertyInfo.Name, propertyInfo.GetValue(entity)));
-            //    }
-
-            //    //the end
-            //    if (propertyInfos.Last() == propertyInfo)
-            //    {
-            //        builder_front.Remove(builder_front.Length - 1, 1);
-            //        builder_front.Append(")");
-
-            //        builder_behind.Remove(builder_behind.Length - 1, 1);
-            //        builder_behind.Append(")");
-            //    }
-            //}
-
-            ////Generate SqlStatement
-            //string sql = builder_front.Append(builder_behind.ToString()).ToString();
-
-            //this.SqlStatement = sql;
-
-            //bool result = false;
-
-            ////Execute Task That Execute SqlStatement
-            //await Task.Run(() =>
-            //{
-            //    result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
-            //});
-
-            //// Cache Deal:if Table change,we should renew the cache value
-            //HttpRuntimeCache_Helper_DG.Cache_Add(tableName, result);
         }
 
         #endregion
@@ -219,29 +212,45 @@ namespace QX_Frame.Bantina.BankinateAuto
             //try
             //{
             this.TableName = tableName.Trim();
+            //Get Table Construction
+            this.TableInfo = GetTableInfoByTableName(this.TableName);
 
-            //query table feilds info
-            string queryFeildSql = $"use [{this.DataBaseName}] SELECT a.[id] as 'TableId', a.colid as 'ColumnId', a.[name] as 'FeildName',a.length as 'Length',c.[name] as 'Type',a.isnullable as 'Nullable' FROM syscolumns a left join systypes c on a.xtype = c.xusertype inner join sysobjects d on a.id = d.id and d.xtype = 'U' where d.name = '{this.TableName}'";
-
-            List<TableFeildsInfo> tableFeildsInfoList = TableConstructionCache($"{this.DataBaseName}{this.TableName}{queryFeildSql}", () =>
-            {
-                return Return_List_T_ByDataSet<TableFeildsInfo>(ExecuteDataSet(queryFeildSql));
-            });
-
-            TableInfo tableInfo = new TableInfo();
-            tableInfo.TableId = tableFeildsInfoList.FirstOrDefault() == null ? 0 : tableFeildsInfoList.FirstOrDefault().TableId;
-            tableInfo.TableName = this.TableName;
-            tableInfo.TableFildsInfoList = tableFeildsInfoList;
-            tableInfo.ForeignTableInfoList = GetForeignRelationTableFeildsInfo(tableInfo);
-
-            this.TableInfo = tableInfo;
             return executeFunc();
+
             //}
             //catch (Exception ex)
             //{
             //    this.Message = ex.ToString();
             //    return false;
             //}
+        }
+
+        private RecognitedFeildKeyValue RecognitFeildFromDataDictionary(string feild, IDictionary<string, object> dataDic)
+        {
+            RecognitedFeildKeyValue recognitedFeildKeyValue = null;
+            foreach (var key in dataDic.Keys)
+            {
+                string keyLower = key.ToLower();
+                string feildLower = feild.ToLower();
+
+                // lower spell compare
+                if (keyLower.Equals(feildLower))
+                {
+                    recognitedFeildKeyValue = new RecognitedFeildKeyValue { Feild = feild, Key = key, Value = dataDic[key] };
+                    break;
+                }
+
+                // remove prefix compare
+                foreach (Opt_TablePrefix prefixItem in Enum.GetValues(typeof(Opt_TablePrefix)))
+                {
+                    if (keyLower.Equals(feildLower.Replace(prefixItem.ToString(), "")))
+                    {
+                        recognitedFeildKeyValue = new RecognitedFeildKeyValue { Feild = feild, Key = key, Value = dataDic[key] };
+                        goto return_immediately;
+                    }
+                }
+            }
+            return_immediately: return recognitedFeildKeyValue;
         }
 
         /// <summary>
@@ -265,8 +274,36 @@ namespace QX_Frame.Bantina.BankinateAuto
             throw new KeyNotFoundException("the database name not found from connection string ! -- qixiao");
         }
 
+        /// <summary>
+        /// GetTableInfoByTableName
+        /// </summary>
+        /// <param name="tbName"></param>
+        /// <returns></returns>
+        private TableInfo GetTableInfoByTableName(string tbName)
+        {
+            //query table feilds info
+            string queryFeildSql = $"use [{this.DataBaseName}] SELECT a.[id] as 'TableId', a.colid as 'ColumnId', a.[name] as 'FeildName',a.length as 'Length',c.[name] as 'Type',a.isnullable as 'Nullable' FROM syscolumns a left join systypes c on a.xtype = c.xusertype inner join sysobjects d on a.id = d.id and d.xtype = 'U' where d.name = '{tbName}'";
 
-        private List<TableInfo> GetForeignRelationTableFeildsInfo(TableInfo tableInfo)
+            List<TableFeildInfo> tableFeildsInfoList = TableConstructionCache($"{this.DataBaseName}{this.TableName}{queryFeildSql}", () =>
+            {
+                return Return_List_T_ByDataSet<TableFeildInfo>(ExecuteDataSet(queryFeildSql));
+            });
+
+            foreach (var item in tableFeildsInfoList)
+            {
+                item.IsIdentity = CheckFeildIsIdentity(item.FeildName, tbName);
+            }
+
+            TableInfo tableInfo = new TableInfo();
+            tableInfo.TableId = tableFeildsInfoList.FirstOrDefault() == null ? 0 : tableFeildsInfoList.FirstOrDefault().TableId;
+            tableInfo.TableName = this.TableName;
+            tableInfo.TableFildsInfoList = tableFeildsInfoList;
+            tableInfo.ForeignTableInfoList = GetForeignRelationTableFeildInfo(tableInfo);
+
+            return tableInfo;
+        }
+
+        private List<TableInfo> GetForeignRelationTableFeildInfo(TableInfo tableInfo)
         {
             //query foreign relation
             string queryForeignRelationSql = $"select a.constid as 'ForeignRelationId',a.fkeyid as 'ParentTableId',a.rkeyid as 'RelationTableId',a.fkey as 'ForeignKeyId',a.rkey as 'RelationKeyId' from sys.sysforeignkeys a";
@@ -286,8 +323,8 @@ namespace QX_Frame.Bantina.BankinateAuto
                 foreignTableInfo.TableName = GetTableNameByTableId(foreignTableInfo.TableId);
                 foreignTableInfo.ForeignKeyId = item.ForeignKeyId;
                 foreignTableInfo.RelationKeyId = item.RelationKeyId;
-                foreignTableInfo.TableFildsInfoList = GetTableFeildsInfoListByTableId(item.RelationTableId);
-                foreignTableInfo.ForeignTableInfoList = GetForeignRelationTableFeildsInfo(foreignTableInfo);
+                foreignTableInfo.TableFildsInfoList = GetTableFeildInfoListByTableId(item.RelationTableId);
+                foreignTableInfo.ForeignTableInfoList = GetForeignRelationTableFeildInfo(foreignTableInfo);
                 foreignTableInfoList.Add(foreignTableInfo);
             }
             return foreignTableInfoList;
@@ -302,14 +339,24 @@ namespace QX_Frame.Bantina.BankinateAuto
                 return Return_List_T_ByDataSet<TableIdName>(ExecuteDataSet(queryFeildSql));
             }).Where(t => t.TableId == tableId).FirstOrDefault().TableName;
         }
-        private List<TableFeildsInfo> GetTableFeildsInfoListByTableId(int tableId)
+
+        private List<TableFeildInfo> GetTableFeildInfoListByTableId(int tableId)
         {
             string queryFeildSql = $"use [{this.DataBaseName}] SELECT a.[id] as 'TableId', a.colid as 'ColumnId', a.[name] as 'FeildName',a.length as 'Length',c.[name] as 'Type',a.isnullable as 'Nullable' FROM syscolumns a left join systypes c on a.xtype = c.xusertype inner join sysobjects d on a.id = d.id and d.xtype = 'U' where d.id = '{tableId}'";
 
             return TableConstructionCache($"{this.DataBaseName}{this.TableName}{queryFeildSql}", () =>
             {
-                return Return_List_T_ByDataSet<TableFeildsInfo>(ExecuteDataSet(queryFeildSql));
+                return Return_List_T_ByDataSet<TableFeildInfo>(ExecuteDataSet(queryFeildSql));
             });
+        }
+
+        private bool CheckFeildIsIdentity(string feildName, string tableName)
+        {
+            string queryFeildSql = $"SELECT COLUMN_NAME as 'ColumnName' FROM INFORMATION_SCHEMA.columns WHERE TABLE_NAME='{tableName}' AND  COLUMNPROPERTY(OBJECT_ID('{tableName}'),COLUMN_NAME,'IsIdentity')=1";
+            return TableConstructionCache($"{this.DataBaseName}{this.TableName}{queryFeildSql}", () =>
+            {
+                return Return_List_T_ByDataSet<FeildName>(ExecuteDataSet(queryFeildSql));
+            }).Exists(t => t.ColumnName.Equals(feildName));
         }
 
         #endregion
@@ -338,14 +385,14 @@ namespace QX_Frame.Bantina.BankinateAuto
         /// <param name="cacheKey"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        private static T TableConstructionCache<T>(string cacheKey, Func<T> func) where T : class
+        internal static T TableConstructionCache<T>(string cacheKey, Func<T> func) where T : class
         {
             string hashKey = cacheKey.GetHashCode().ToString();
             object cacheValue = HttpRuntimeCache_Helper_DG.Cache_Get(hashKey);
             if (cacheValue != null)
                 return cacheValue as T;
             cacheValue = func();
-            HttpRuntimeCache_Helper_DG.Cache_Add(hashKey, cacheValue);
+            HttpRuntimeCache_Helper_DG.Cache_Add(hashKey, cacheValue, 1440);
             return cacheValue as T;
         }
 
@@ -392,49 +439,5 @@ namespace QX_Frame.Bantina.BankinateAuto
         public void Dispose() => GC.Collect();
 
         #endregion
-    }
-
-    /// <summary>
-    /// TableInfo class
-    /// </summary>
-    internal class TableInfo
-    {
-        public int TableId { get; set; }
-        public string TableName { get; set; }
-        public List<TableFeildsInfo> TableFildsInfoList { get; set; }
-        public bool HasForeignKey { get; set; } = false;
-        //parent foreignKeyId
-        public int ForeignKeyId { get; set; }
-        //this table relation parent relationKeyId
-        public int RelationKeyId { get; set; }
-        //foreignTableList
-        public List<TableInfo> ForeignTableInfoList { get; set; }
-    }
-
-    /// <summary>
-    /// Internal Class TableCOnstruction
-    /// </summary>
-    internal class TableFeildsInfo
-    {
-        public int TableId { get; set; }
-        public int ColumnId { get; set; }
-        public string FeildName { get; set; }
-        public int Length { get; set; }
-        public string Type { get; set; }
-        public string Nullable { get; set; }
-    }
-
-    internal class ForeignRelatioin
-    {
-        public int ForeignRelationId { get; set; }
-        public int ParentTableId { get; set; }
-        public int RelationTableId { get; set; }
-        public int ForeignKeyId { get; set; }
-        public int RelationKeyId { get; set; }
-    }
-    internal class TableIdName
-    {
-        public int TableId { get; set; }
-        public string TableName { get; set; }
     }
 }

@@ -1,10 +1,21 @@
-﻿using System;
+﻿/*********************************************************
+ * CopyRight: QIXIAO CODE BUILDER. 
+ * Version:4.2.0
+ * Author:qixiao(柒小)
+ * Create:2017-6-6 11:54:07
+ * E-mail: dong@qixiao.me | wd8622088@foxmail.com 
+ * Personal WebSit: http://qixiao.me 
+ * Technical WebSit: http://www.cnblogs.com/qixiaoyizhan/ 
+ * Description:-.
+ * Thx , Best Regards ~
+ *********************************************************/
+using System;
 using System.Collections;
 using System.Web;
 using System.Web.Caching;
 /**
 * author:qixiao
-* create2017-6-6 11:54:07
+* create:2017-6-6 11:54:07
 * */
 namespace QX_Frame.Bantina
 {

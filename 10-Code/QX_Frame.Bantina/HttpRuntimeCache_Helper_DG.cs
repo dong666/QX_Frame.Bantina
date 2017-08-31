@@ -122,5 +122,25 @@ namespace QX_Frame.Bantina
         {
             get { return HttpRuntime.Cache.Count; }
         }
+
+        #region Cache Support
+        /// <summary>
+        /// TableConstructionCache
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="cacheKey"></param>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static T CacheSupport<T>(string cacheKey, Func<T> func) where T : class
+        {
+            string hashKey = cacheKey.GetHashCode().ToString();
+            object cacheValue = HttpRuntimeCache_Helper_DG.Cache_Get(hashKey);
+            if (cacheValue != null)
+                return cacheValue as T;
+            cacheValue = func();
+            HttpRuntimeCache_Helper_DG.Cache_Add(hashKey, cacheValue, 1440);
+            return cacheValue as T;
+        }
+        #endregion
     }
 }

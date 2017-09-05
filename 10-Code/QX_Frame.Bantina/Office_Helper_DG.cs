@@ -80,7 +80,7 @@ namespace QX_Frame.Bantina
                                     if (row == null) continue;
 
                                     dataRow = dataTable.NewRow();
-                                    for (int j = row.FirstCellNum; j < cellCount - 1; ++j)
+                                    for (int j = row.FirstCellNum; j < cellCount; ++j)
                                     {
                                         cell = row.GetCell(j);
                                         if (cell == null)

@@ -12,19 +12,29 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            Dictionary<string, object> dataDic = new Dictionary<string, object>();
-            dataDic.Add("classid", "1");
+            //Dictionary<string, object> dataDic = new Dictionary<string, object>();
+            //dataDic.Add("classid", "1");
 
+
+            //using (var db = new DB_QX_Frame_Test())
+            //{
+            //    if (db.Insert("TB_People", dataDic))
+            //    {
+            //        Console.WriteLine(db.Message);
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine(db.Message);
+            //    }
+            //}
 
             using (var db = new DB_QX_Frame_Test())
             {
-                if (db.Insert("TB_People", dataDic))
+                List<TB_People> peoples = db.QueryEntities<TB_People>();
+
+                foreach (var item in peoples)
                 {
-                    Console.WriteLine(db.Message);
-                }
-                else
-                {
-                    Console.WriteLine(db.Message);
+                    Console.WriteLine(item.Uid + " - " + item.TB_ClassName.ClassName);
                 }
             }
 
@@ -33,7 +43,7 @@ namespace ConsoleApp
             Console.ReadKey();
         }
     }
-    public class DB_QX_Frame_Test : BankinateAuto
+    public class DB_QX_Frame_Test : Bankinate
     {
         public DB_QX_Frame_Test() : base("data source=.;initial catalog=DB_QX_Frame_Test;persist security info=True;user id=Sa;password=Sa123456;MultipleActiveResultSets=True;App=EntityFramework") { }
     }
@@ -48,10 +58,9 @@ namespace ConsoleApp
         [Column]
         public int Age { get; set; }
         [Column]
-        [ForeignKey]
         public int ClassId { get; set; }
-        //[ForeignTable]
-        //public TB_ClassName TB_ClassName { get; set; }
+        [ForeignTable(ForeignKeyFieldName = "ClassId")]
+        public TB_ClassName TB_ClassName { get; set; }
     }
 
     [Table(TableName = "TB_ClassName")]

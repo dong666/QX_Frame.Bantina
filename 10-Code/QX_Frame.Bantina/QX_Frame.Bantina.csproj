@@ -101,7 +101,7 @@
     <Compile Include="Bankinate\AutoIncreaseAttribute.cs" />
     <Compile Include="Bankinate\Bankinate.cs" />
     <Compile Include="Bankinate\ColumnAttribute.cs" />
-    <Compile Include="Bankinate\ForeignAttribute.cs" />
+    <Compile Include="Bankinate\ForeignTableAttribute.cs" />
     <Compile Include="Bankinate\KeyAttribute.cs" />
     <Compile Include="Bankinate\TableAttribute.cs" />
     <Compile Include="Cache_Helper_DG.cs" />

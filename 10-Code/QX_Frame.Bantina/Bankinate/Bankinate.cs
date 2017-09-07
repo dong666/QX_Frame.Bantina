@@ -1140,16 +1140,11 @@ namespace QX_Frame.Bantina.Bankinate
                     foreach (DataRow row in dt.Rows)
                     {
                         TEntity model = System.Activator.CreateInstance<TEntity>();//create instance of entity
-                        string keyName = default(string);
                         foreach (PropertyInfo propertyInfo in propertyInfos)
                         {
-                            if (propertyInfo.GetCustomAttribute(typeof(ForeignKeyAttribute), true) is ForeignKeyAttribute foreignKeyAttr)
-                                keyName = propertyInfo.Name;
-
                             if (propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true) is KeyAttribute keyAttr)
                             {
                                 model = SetValueToTEntityFromRows(model, propertyInfo, row, propertyInfo.Name);
-                                keyName = propertyInfo.Name;
                                 continue;
                             }
 
@@ -1167,6 +1162,7 @@ namespace QX_Frame.Bantina.Bankinate
                              * */
                             if (propertyInfo.GetCustomAttribute(typeof(ForeignTableAttribute), true) is ForeignTableAttribute foreignTableAttr)
                             {
+                                string keyName = foreignTableAttr.ForeignKeyFieldName;
                                 //set current key value to keyValue then call ForeignQueryEntity to get foreign value
                                 if (string.IsNullOrEmpty(keyName))
                                     throw new Exception_DG("foreign table must support key column ! -- qixiao");
@@ -1180,7 +1176,7 @@ namespace QX_Frame.Bantina.Bankinate
                                 foreach (var item in propertyList)
                                 {
                                     /**
-                                     * 1.get the foerign table KeyAttribute marked PropertyInfo
+                                     * 1.get the foreign table KeyAttribute marked PropertyInfo
                                      * 2.get KeyAttribute PropertyInfo`s value from foreign table instance
                                      * 3.compare the value ,set foreign object value if match (LIKE linq FirstOrDefault() method); 
                                      * */
@@ -1254,6 +1250,7 @@ namespace QX_Frame.Bantina.Bankinate
 
             string sql = $"SELECT * FROM {tableName}";
 
+            #region  Obsolete code
             /**
              * update query single each item to query * and storage into cache,then get value from cache
              * means the foreign Table may query all from database
@@ -1296,6 +1293,7 @@ namespace QX_Frame.Bantina.Bankinate
 
             //Generate SqlStatement
             //string sql = builder.ToString();
+            #endregion
 
             //Cache Support
             string cacheKey = string.Concat("QueryForeignEntity_TEntity", tableName, sql).GetHashCode().ToString();

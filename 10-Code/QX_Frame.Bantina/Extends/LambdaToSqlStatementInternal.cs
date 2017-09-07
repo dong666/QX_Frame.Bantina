@@ -82,6 +82,5 @@ namespace QX_Frame.Bantina.Extends
         {
             return lambdaString.Replace("True", "1=1");
         }
-
     }
 }

@@ -12,48 +12,69 @@
  * Thx , Best Regards ~
  *********************************************************/
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace QX_Frame.Bantina.Bankinate
 {
-    public class LinQLambdaToSql
+    internal class LinQLambdaToSql
     {
         #region get where and order by statement method
 
+        /// <summary>
+        /// Generate Sql condition statement
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="where"></param>
+        /// <returns></returns>
         public static string ConvertWhere<T>(Expression<Func<T, bool>> where) where T : class
         {
-            string res = "";
+            StringBuilder builder = new StringBuilder();
+            builder.Append(" ");
+            builder.Append(where.Parameters.FirstOrDefault().Name);
+            builder.Append(" WHERE ");
             if (where.Body is BinaryExpression)
             {
                 BinaryExpression be = ((BinaryExpression)where.Body);
-                res = BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+                builder.Append(BinarExpressionProvider(be.Left, be.Right, be.NodeType));
             }
             else if (where.Body is MethodCallExpression)
             {
                 MethodCallExpression be = ((MethodCallExpression)where.Body);
-                res = ExpressionRouter(where.Body);
+                builder.Append(ExpressionRouter(where.Body));
             }
             else
             {
-                return " ";
+                builder.Append("1=1");
             }
-            return res;
+            return builder.ToString();
         }
+
+        /// <summary>
+        /// Generate Order By SqlStatement
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="orderby"></param>
+        /// <returns></returns>
         public static string ConvertOrderBy<T>(Expression<Func<T, object>> orderby) where T : class
         {
-            if (orderby.Body is UnaryExpression)
-            {
-                UnaryExpression ue = ((UnaryExpression)orderby.Body);
-                return " ORDER BY " + ExpressionRouter(ue.Operand);
-            }
-            else
-            {
-                MemberExpression order = ((MemberExpression)orderby.Body);
-                return " ORDER BY " + order.Member.Name;
-            }
+            #region Obsolete
+            //StringBuilder builder = new StringBuilder();
+            //builder.Append(orderby.Parameters.FirstOrDefault().Name);
+            //if (orderby.Body is UnaryExpression)
+            //{
+            //    UnaryExpression ue = ((UnaryExpression)orderby.Body);
+            //    builder.Append(ExpressionRouter(ue.Operand));
+            //}
+            //else
+            //{
+            //    MemberExpression order = ((MemberExpression)orderby.Body);
+            //    builder.Append(order.Member.Name);
+            //}
+            //return builder.ToString();
+            #endregion
+            return orderby.Body.ToString();
         }
 
         #endregion
@@ -125,11 +146,11 @@ namespace QX_Frame.Bantina.Bankinate
                 }
                 else if (mce.Method.Name.Equals("Contains"))
                 {
-                    return string.Concat(mce.Object.ToString(), " LIKE '%", value.Replace("'",""),"%' ");
+                    return string.Concat(mce.Object.ToString(), " LIKE '%", value.Replace("'", ""), "%'");
                 }
                 else if (mce.Method.Name.Equals("StartsWith"))
                 {
-                    return string.Concat(mce.Object.ToString(), " LIKE '", value.Replace("'", ""), "%' ");
+                    return string.Concat(mce.Object.ToString(), " LIKE '", value.Replace("'", ""), "%'");
                 }
                 else if (mce.Method.Name.Equals("EndsWith"))
                 {
@@ -142,7 +163,7 @@ namespace QX_Frame.Bantina.Bankinate
                 ConstantExpression ce = ((ConstantExpression)exp);
                 if (ce.Value == null)
                 {
-                    return "null";
+                    return "NULL";
                 }
                 else if (ce.Value is ValueType)
                 {
@@ -150,7 +171,7 @@ namespace QX_Frame.Bantina.Bankinate
                 }
                 else if (ce.Value is string || ce.Value is DateTime || ce.Value is char)
                 {
-                    return string.Concat("'",ce.Value.ToString(), "'");
+                    return string.Concat("'", ce.Value.ToString(), "'");
                 }
                 return " ";
             }
@@ -172,10 +193,10 @@ namespace QX_Frame.Bantina.Bankinate
                     return " AND ";
 
                 case ExpressionType.Equal:
-                    return " =";
+                    return "=";
 
                 case ExpressionType.GreaterThan:
-                    return " >";
+                    return ">";
 
                 case ExpressionType.GreaterThanOrEqual:
                     return ">=";
@@ -214,7 +235,5 @@ namespace QX_Frame.Bantina.Bankinate
         }
 
         #endregion
-
-
     }
 }

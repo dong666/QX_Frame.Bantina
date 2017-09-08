@@ -30,23 +30,15 @@ namespace ConsoleApp
             //    }
             //}
 
-            //using (var db = new DB_QX_Frame_Test())
-            //{
-            //    List<TB_People> peoples = db.QueryEntities<TB_People>();
+            using (var db = new DB_QX_Frame_Test())
+            {
+                List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.ClassId==1);
 
-            //    foreach (var item in peoples)
-            //    {
-            //        Console.WriteLine(item.Uid + " - " + item.TB_ClassName.ClassName);
-            //    }
-            //}
-            string a = "111";
-            DateTime time = DateTime.Now;
-            //不支持下面这种time.ToString() 条件里面带表达式的
-            Expression<Func<TB_People, bool>> func = t => t.Name.Equals(a) && t.Name.Contains("999") || t.Age==1 || t.Name.StartsWith("1") && t.Name.EndsWith(time.ToString());
-            Expression<Func<TB_People, object>> exp = t => t.Age;
-            string sql = LinQLambdaToSql.ConvertWhere(func);
-            string sql2 = LinQLambdaToSql.ConvertOrderBy(exp);
-
+                foreach (var item in peoples)
+                {
+                    Console.WriteLine(item.Uid + " - " + item.TB_ClassName.ClassName);
+                }
+            }            
 
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();

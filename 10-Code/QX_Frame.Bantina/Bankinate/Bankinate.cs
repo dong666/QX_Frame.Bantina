@@ -4,6 +4,7 @@
  * Author:qixiao(柒小)
  * Create:2017-8-7 10:46:07
  * Update:2017-8-22 09:26:07
+ * Update:2017-9-8 09:24:53
  * E-mail: dong@qixiao.me | wd8622088@foxmail.com 
  * Personal WebSit: http://qixiao.me 
  * Technical WebSit: http://www.cnblogs.com/qixiaoyizhan/ 
@@ -43,10 +44,10 @@ namespace QX_Frame.Bantina.Bankinate
         TEntity QueryEntity<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class;
         List<TEntity> QueryEntities<TEntity>() where TEntity : class;
         List<TEntity> QueryEntities<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class;
-        List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, bool isDESC = false) where TEntity : class;
-        List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, Expression<Func<TEntity, bool>> where, bool isDESC = false) where TEntity : class;
-        List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, out int count, bool isDESC = false) where TEntity : class;
-        List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, Expression<Func<TEntity, bool>> where, out int count, bool isDESC = false) where TEntity : class;
+        List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, bool isDESC = false) where TEntity : class;
+        List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, Expression<Func<TEntity, bool>> where, bool isDESC = false) where TEntity : class;
+        List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, out int count, bool isDESC = false) where TEntity : class;
+        List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, Expression<Func<TEntity, bool>> where, out int count, bool isDESC = false) where TEntity : class;
         DataTable QueryDataTable<TEntity>(string sql, params SqlParameter[] parms) where TEntity : class;
         DataSet QueryDataDataSet<TEntity>(string sql, params SqlParameter[] parms) where TEntity : class;
         int ExecuteSql<TEntity>(string sql, params SqlParameter[] parms) where TEntity : class;
@@ -509,16 +510,13 @@ namespace QX_Frame.Bantina.Bankinate
         /// <returns></returns>
         public bool QueryExist<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
 
             builder.Append("SELECT COUNT(0) FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
 
             //Generate SqlStatement
             string sql = builder.ToString();
@@ -569,8 +567,6 @@ namespace QX_Frame.Bantina.Bankinate
         /// <returns></returns>
         public int QueryCount<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
@@ -578,8 +574,7 @@ namespace QX_Frame.Bantina.Bankinate
 
             builder.Append("SELECT COUNT(0) FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
 
             //Generate SqlStatement
             string sql = builder.ToString();
@@ -605,16 +600,13 @@ namespace QX_Frame.Bantina.Bankinate
         /// <returns></returns>
         public TEntity QueryEntity<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
 
             builder.Append("SELECT TOP (1) * FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
 
             //Generate SqlStatement
             string sql = builder.ToString();
@@ -665,16 +657,13 @@ namespace QX_Frame.Bantina.Bankinate
         /// <returns></returns>
         public List<TEntity> QueryEntities<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
 
             builder.Append("SELECT * FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
 
             //Generate SqlStatement
             string sql = builder.ToString();
@@ -702,7 +691,7 @@ namespace QX_Frame.Bantina.Bankinate
         /// <param name="orderBy"></param>
         /// <param name="isDESC"></param>
         /// <returns></returns>
-        public List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, bool isDESC = false) where TEntity : class
+        public List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, bool isDESC = false) where TEntity : class
         {
             string tableName = GetTablaName(typeof(TEntity));
 
@@ -711,19 +700,11 @@ namespace QX_Frame.Bantina.Bankinate
             builder.Append("SELECT TOP ");
             builder.Append(pageSize);
             builder.Append(" * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ");
-            builder.Append(orderBy.ToString().LambdaToSqlStatementOrderBy());
-            if (isDESC)
-            {
-                builder.Append(" DESC ");
-            }
-            else
-            {
-                builder.Append(" ASC ");
-            }
+            builder.Append(LinQLambdaToSql.ConvertOrderBy(orderBy));
+            if (isDESC) builder.Append(" DESC "); else builder.Append(" ASC ");
             builder.Append(") AS RowNumber,* FROM ");
             builder.Append(tableName);
-            builder.Append(" WHERE 1=1");
-            builder.Append(") AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
+            builder.Append(" WHERE 1=1) AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
             builder.Append(pageSize);
             builder.Append(" * (");
             builder.Append(pageIndex);
@@ -756,10 +737,8 @@ namespace QX_Frame.Bantina.Bankinate
         /// <param name="where"></param>
         /// <param name="isDESC"></param>
         /// <returns></returns>
-        public List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, Expression<Func<TEntity, bool>> where, bool isDESC = false) where TEntity : class
+        public List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, Expression<Func<TEntity, bool>> where, bool isDESC = false) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
@@ -768,19 +747,11 @@ namespace QX_Frame.Bantina.Bankinate
             builder.Append("SELECT TOP ");
             builder.Append(pageSize);
             builder.Append(" * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ");
-            builder.Append(orderBy.ToString().LambdaToSqlStatementOrderBy());
-            if (isDESC)
-            {
-                builder.Append(" DESC ");
-            }
-            else
-            {
-                builder.Append(" ASC ");
-            }
+            builder.Append(LinQLambdaToSql.ConvertOrderBy(orderBy));
+            if (isDESC) builder.Append(" DESC "); else builder.Append(" ASC ");
             builder.Append(") AS RowNumber,* FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
             builder.Append(") AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
             builder.Append(pageSize);
             builder.Append(" * (");
@@ -814,7 +785,7 @@ namespace QX_Frame.Bantina.Bankinate
         /// <param name="count"></param>
         /// <param name="isDESC"></param>
         /// <returns></returns>
-        public List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, out int count, bool isDESC = false) where TEntity : class
+        public List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, out int count, bool isDESC = false) where TEntity : class
         {
             string tableName = GetTablaName(typeof(TEntity));
 
@@ -823,19 +794,11 @@ namespace QX_Frame.Bantina.Bankinate
             builder.Append("SELECT TOP ");
             builder.Append(pageSize);
             builder.Append(" * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ");
-            builder.Append(orderBy.ToString().LambdaToSqlStatementOrderBy());
-            if (isDESC)
-            {
-                builder.Append(" DESC ");
-            }
-            else
-            {
-                builder.Append(" ASC ");
-            }
+            builder.Append(LinQLambdaToSql.ConvertOrderBy(orderBy));
+            if (isDESC) builder.Append(" DESC "); else builder.Append(" ASC ");
             builder.Append(") AS RowNumber,* FROM ");
             builder.Append(tableName);
-            builder.Append(" WHERE 1=1");
-            builder.Append(") AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
+            builder.Append(" WHERE 1=1) AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
             builder.Append(pageSize);
             builder.Append(" * (");
             builder.Append(pageIndex);
@@ -871,10 +834,8 @@ namespace QX_Frame.Bantina.Bankinate
         /// <param name="count"></param>
         /// <param name="isDESC"></param>
         /// <returns></returns>
-        public List<TEntity> QueryEntitiesPaging<TEntity, TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, TKey>> orderBy, Expression<Func<TEntity, bool>> where, out int count, bool isDESC = false) where TEntity : class
+        public List<TEntity> QueryEntitiesPaging<TEntity>(int pageIndex, int pageSize, Expression<Func<TEntity, object>> orderBy, Expression<Func<TEntity, bool>> where, out int count, bool isDESC = false) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
@@ -883,19 +844,11 @@ namespace QX_Frame.Bantina.Bankinate
             builder.Append("SELECT TOP ");
             builder.Append(pageSize);
             builder.Append(" * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ");
-            builder.Append(orderBy.ToString().LambdaToSqlStatementOrderBy());
-            if (isDESC)
-            {
-                builder.Append(" DESC ");
-            }
-            else
-            {
-                builder.Append(" ASC ");
-            }
+            builder.Append(LinQLambdaToSql.ConvertOrderBy(orderBy));
+            if (isDESC) builder.Append(" DESC "); else builder.Append(" ASC ");
             builder.Append(") AS RowNumber,* FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
             builder.Append(") AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
             builder.Append(pageSize);
             builder.Append(" * (");
@@ -929,16 +882,13 @@ namespace QX_Frame.Bantina.Bankinate
         /// <returns></returns>
         public DataTable QueryDataTable<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
 
             builder.Append("SELECT * FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
 
             //Generate SqlStatement
             string sql = builder.ToString();
@@ -977,16 +927,13 @@ namespace QX_Frame.Bantina.Bankinate
         /// <returns></returns>
         public DataSet QueryDataDataSet<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
-            string lambdaString = where.ToString();
-
             string tableName = GetTablaName(typeof(TEntity));
 
             StringBuilder builder = new StringBuilder();
 
             builder.Append("SELECT * FROM ");
             builder.Append(tableName);
-            builder.Append(" ");
-            builder.Append(lambdaString.LambdaToSqlStatement());
+            builder.Append(LinQLambdaToSql.ConvertWhere(where));
 
             //Generate SqlStatement
             string sql = builder.ToString();
@@ -1171,7 +1118,7 @@ namespace QX_Frame.Bantina.Bankinate
                                 Type generic = typeof(List<>).MakeGenericType(new Type[] { propertyInfo.PropertyType });
                                 var propertyList = Activator.CreateInstance(generic) as IList;
                                 //get query values from method ForeignQueryEntity and set value to list.
-                                propertyList = _foreignQueryEntity.MakeGenericMethod(propertyInfo.PropertyType).Invoke(null,null) as IList;
+                                propertyList = _foreignQueryEntity.MakeGenericMethod(propertyInfo.PropertyType).Invoke(null, null) as IList;
 
                                 foreach (var item in propertyList)
                                 {

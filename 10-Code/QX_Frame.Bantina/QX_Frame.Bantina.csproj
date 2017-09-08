@@ -115,7 +115,6 @@
     <Compile Include="Encrypt_Helper_DG.cs" />
     <Compile Include="Extends\CloneExtends.cs" />
     <Compile Include="Extends\Exception_DG.cs" />
-    <Compile Include="Extends\LambdaToSqlHelper.cs" />
     <Compile Include="Extends\LambdaToSqlStatementClass.cs" />
     <Compile Include="Extends\LambdaToSqlStatementInternal.cs" />
     <Compile Include="Extends\ToTypesExtends.cs" />

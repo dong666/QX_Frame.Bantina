@@ -1,14 +1,24 @@
-﻿using System;
+﻿/*********************************************************
+ * CopyRight: QIXIAO CODE BUILDER. 
+ * Version:4.2.0
+ * Author:qixiao(柒小)
+ * Create:2017-8-7 09:34:31
+ * Update:2017-09-08 11:18:39
+ * E-mail: dong@qixiao.me | wd8622088@foxmail.com 
+ * GitHub: https://github.com/dong666 
+ * Personal web site: http://qixiao.me 
+ * Technical WebSit: http://www.cnblogs.com/qixiaoyizhan/ 
+ * Description:
+ * Thx , Best Regards ~
+ *********************************************************/
+using System;
 
-/**
- * author:qixiao
- * create:2017-8-7 09:34:31
- * */
 namespace QX_Frame.Bantina.Extends
 {
     /// <summary>
     /// Internal class
     /// </summary>
+    [Obsolete("this class migration to Bankinate.LinQLambdaToSql")]
     internal static class LambdaToSqlStatementInternal
     {
         public static string LambdaToSqlStatement_Contains(this string lambdaString)

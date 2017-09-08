@@ -30,9 +30,10 @@ namespace ConsoleApp
             //    }
             //}
 
+            Guid uid = Guid.NewGuid();
             using (var db = new DB_QX_Frame_Test())
             {
-                List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.ClassId==1);
+                List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.Uid== uid);
 
                 foreach (var item in peoples)
                 {

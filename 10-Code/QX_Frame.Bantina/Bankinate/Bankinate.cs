@@ -1315,9 +1315,9 @@ namespace QX_Frame.Bantina.Bankinate
             //Execute Action
             object result = func();
 
-            HttpRuntimeCache_Helper_DG.Cache_Add(cacheKey, result);
+            if (result!=null)
+                HttpRuntimeCache_Helper_DG.Cache_Add(cacheKey, result);
             HttpRuntimeCache_Helper_DG.Cache_Delete(tableName);
-
             return result;
         }
 

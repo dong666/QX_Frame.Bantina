@@ -117,6 +117,10 @@ namespace QX_Frame.Bantina.Bankinate
                     }
                     else if (result is ValueType)
                     {
+                        if (result is Guid)
+                        {
+                            return string.Concat('\'', result, '\'');
+                        }
                         return result.ToString();
                     }
                     else if (result is string || result is DateTime || result is char)

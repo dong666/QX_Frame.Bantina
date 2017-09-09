@@ -17,7 +17,6 @@ namespace ConsoleApp
             //Dictionary<string, object> dataDic = new Dictionary<string, object>();
             //dataDic.Add("classid", "1");
 
-
             //using (var db = new DB_QX_Frame_Test())
             //{
             //    if (db.Insert("TB_People", dataDic))
@@ -39,7 +38,7 @@ namespace ConsoleApp
                 {
                     Console.WriteLine(item.Uid + " - " + item.TB_ClassName.ClassName);
                 }
-            }            
+            }
 
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();

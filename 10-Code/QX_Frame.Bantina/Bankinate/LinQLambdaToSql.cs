@@ -171,6 +171,10 @@ namespace QX_Frame.Bantina.Bankinate
                 }
                 else if (ce.Value is ValueType)
                 {
+                    if (ce.Value is bool)
+                    {
+                        return " 1=1 ";
+                    }
                     return ce.Value.ToString();
                 }
                 else if (ce.Value is string || ce.Value is DateTime || ce.Value is char)

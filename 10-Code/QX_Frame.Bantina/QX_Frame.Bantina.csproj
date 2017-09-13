@@ -134,6 +134,7 @@
     <Compile Include="PredicateBuilder_Helper_DG.cs" />
     <Compile Include="ProcessFlow_Helper_DG.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Random_Helper_DG.cs" />
     <Compile Include="Redis_Helper_DG.cs" />
     <Compile Include="Return_Helper_DG.cs" />
     <Compile Include="Service\Log_MQ_Service.cs" />

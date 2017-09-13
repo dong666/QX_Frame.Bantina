@@ -11,33 +11,6 @@ namespace QX_Frame.Bantina
     public abstract class String_Helper_DG
     {
         /// <summary>
-        /// get Random String
-        /// </summary>
-        /// <param name="length">string length</param>
-        /// <returns></returns>
-        public static string GetRandomString(int length)
-        {
-            string str = string.Empty;
-            long num2 = DateTime.Now.Ticks;
-            Random random = new Random(((int)(((ulong)num2) & 0xffffffffL)) | ((int)(num2 >> 1)));
-            for (int i = 0; i < length; i++)
-            {
-                char ch;
-                int num = random.Next();
-                if ((num % 2) == 0)
-                {
-                    ch = (char)(0x30 + ((ushort)(num % 10)));
-                }
-                else
-                {
-                    ch = (char)(0x41 + ((ushort)(num % 0x1a)));
-                }
-                str = str + ch.ToString();
-            }
-            return str;
-        }
-
-        /// <summary>
         /// get String By Stream
         /// </summary>
         /// <param name="inputStream">inputStream</param>

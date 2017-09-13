@@ -25,7 +25,7 @@ namespace QX_Frame.Bantina
         /// </summary>
         private static PooledRedisClientManager _prcm;
 
-        static Redis_Helper_DG()
+        public Redis_Helper_DG()
         {
             CreateManager();
         }
@@ -33,12 +33,12 @@ namespace QX_Frame.Bantina
         /// <summary>  
         /// 创建链接池管理对象  
         /// </summary>  
-        private static void CreateManager()
+        private void CreateManager()
         {
             _prcm = CreateManager(QX_Frame_Helper_DG_Config.Cache_Redis_Host_ReadWrite_Array, QX_Frame_Helper_DG_Config.Cache_Redis_Host_OnlyRead_Array);
         }
 
-        private static PooledRedisClientManager CreateManager(string[] readWriteHosts, string[] readOnlyHosts)
+        private PooledRedisClientManager CreateManager(string[] readWriteHosts, string[] readOnlyHosts)
         {
             //WriteServerList：可写的Redis链接地址。  
             //ReadServerList：可读的Redis链接地址。  

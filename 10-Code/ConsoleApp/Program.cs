@@ -1,4 +1,5 @@
-﻿using QX_Frame.Bantina.Bankinate;
+﻿using QX_Frame.Bantina;
+using QX_Frame.Bantina.Bankinate;
 using QX_Frame.Bantina.BankinateAuto;
 using QX_Frame.Bantina.Extends;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Test.ConsoleApp1.NETFramework461.Config;
 
 namespace ConsoleApp
 {
@@ -14,6 +16,7 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
+            new ConfigBootStrap();
             //Dictionary<string, object> dataDic = new Dictionary<string, object>();
             //dataDic.Add("classid", "1");
 
@@ -29,19 +32,20 @@ namespace ConsoleApp
             //    }
             //}
 
-            Guid uid = Guid.NewGuid();
-            using (var db = new DB_QX_Frame_Test())
-            {
-                Expression<Func<TB_People, bool>> where = t => true;
-                where = where.And (t=> t.Name.Contains("123") || t.Age == 2);
-                List<TB_People> peoples = db.QueryEntities<TB_People>(where);
+            //Guid uid = Guid.NewGuid();
+            //using (var db = new DB_QX_Frame_Test())
+            //{
+            //    Expression<Func<TB_People, bool>> where = t => true;
+            //    where = where.And (t=> t.Name.Contains("123") || t.Age == 2);
+            //    List<TB_People> peoples = db.QueryEntities<TB_People>(where);
 
-                foreach (var item in peoples)
-                {
-                    Console.WriteLine(item.Uid + " - " + item.TB_ClassName.ClassName);
-                }
-            }
+            //    foreach (var item in peoples)
+            //    {
+            //        Console.WriteLine(item.Uid + " - " + item.TB_ClassName.ClassName);
+            //    }
+            //}
 
+            Cache_Helper_DG.Cache_Add("123", 1);
 
 
             Console.WriteLine("any key to exit ...");

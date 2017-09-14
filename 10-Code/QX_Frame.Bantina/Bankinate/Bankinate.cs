@@ -33,11 +33,11 @@ namespace QX_Frame.Bantina.Bankinate
     /// </summary>
     public interface IBankinate
     {
-        Task<bool> Add<TEntity>(TEntity entity) where TEntity : class;
-        Task<bool> Update<TEntity>(TEntity entity) where TEntity : class;
-        Task<bool> Update<TEntity>(TEntity entity, Expression<Func<TEntity, bool>> where) where TEntity : class;
-        Task<bool> Delete<TEntity>(TEntity entity) where TEntity : class;
-        Task<bool> Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class;
+        bool Add<TEntity>(TEntity entity) where TEntity : class;
+        bool Update<TEntity>(TEntity entity) where TEntity : class;
+        bool Update<TEntity>(TEntity entity, Expression<Func<TEntity, bool>> where) where TEntity : class;
+        bool Delete<TEntity>(TEntity entity) where TEntity : class;
+        bool Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class;
         bool QueryExist<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class;
         int QueryCount<TEntity>() where TEntity : class;
         int QueryCount<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class;
@@ -118,7 +118,7 @@ namespace QX_Frame.Bantina.Bankinate
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<bool> Add<TEntity>(TEntity entity) where TEntity : class
+        public bool Add<TEntity>(TEntity entity) where TEntity : class
         {
             Type entityType = typeof(TEntity);
 
@@ -185,13 +185,9 @@ namespace QX_Frame.Bantina.Bankinate
 
             this.SqlStatement = sql;
 
-            bool result = false;
-
             //Execute Task That Execute SqlStatement
-            await Task.Run(() =>
-             {
-                 result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
-             });
+
+            bool result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
 
             // Cache Deal:if Table change,we should renew the cache value
             HttpRuntimeCache_Helper_DG.Cache_Add(tableName, result);
@@ -209,7 +205,7 @@ namespace QX_Frame.Bantina.Bankinate
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<bool> Update<TEntity>(TEntity entity) where TEntity : class
+        public bool Update<TEntity>(TEntity entity) where TEntity : class
         {
             int keyCount = 0;
 
@@ -283,13 +279,8 @@ namespace QX_Frame.Bantina.Bankinate
 
             this.SqlStatement = sql;
 
-            bool result = false;
-
             //Execute Task That Execute SqlStatement
-            await Task.Run(() =>
-            {
-                result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
-            });
+            bool result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
 
             // Cache Deal:if Table change,we should renew the cache value
             HttpRuntimeCache_Helper_DG.Cache_Add(tableName, result);
@@ -304,7 +295,7 @@ namespace QX_Frame.Bantina.Bankinate
         /// <param name="entity"></param>
         /// <param name="where"></param>
         /// <returns></returns>
-        public async Task<bool> Update<TEntity>(TEntity entity, Expression<Func<TEntity, bool>> where) where TEntity : class
+        public bool Update<TEntity>(TEntity entity, Expression<Func<TEntity, bool>> where) where TEntity : class
         {
             string lambdaString = where.ToString();
 
@@ -370,13 +361,8 @@ namespace QX_Frame.Bantina.Bankinate
 
             this.SqlStatement = sql;
 
-            bool result = false;
-
             //Execute Task That Execute SqlStatement
-            await Task.Run(() =>
-            {
-                result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
-            });
+            bool result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
 
             // Cache Deal:if Table change,we should renew the cache value
             HttpRuntimeCache_Helper_DG.Cache_Add(tableName, result);
@@ -394,7 +380,7 @@ namespace QX_Frame.Bantina.Bankinate
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<bool> Delete<TEntity>(TEntity entity) where TEntity : class
+        public bool Delete<TEntity>(TEntity entity) where TEntity : class
         {
             int keyCount = 0;
 
@@ -442,13 +428,8 @@ namespace QX_Frame.Bantina.Bankinate
 
             this.SqlStatement = sql;
 
-            bool result = false;
-
             //Execute Task That Execute SqlStatement
-            await Task.Run(() =>
-            {
-                result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
-            });
+            bool result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
 
             // Cache Deal:if Table change,we should renew the cache value
             HttpRuntimeCache_Helper_DG.Cache_Add(tableName, result);
@@ -462,7 +443,7 @@ namespace QX_Frame.Bantina.Bankinate
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="where"></param>
         /// <returns></returns>
-        public async Task<bool> Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
+        public bool Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
             string lambdaString = where.ToString();
 
@@ -484,13 +465,8 @@ namespace QX_Frame.Bantina.Bankinate
 
             this.SqlStatement = sql;
 
-            bool result = false;
-
             //Execute Task That Execute SqlStatement
-            await Task.Run(() =>
-            {
-                result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
-            });
+            bool result = ExecuteNonQuery(sql, System.Data.CommandType.Text, sqlParameterList.ToArray()) > 0;
 
             // Cache Deal:if Table change,we should renew the cache value
             HttpRuntimeCache_Helper_DG.Cache_Add(tableName, result);
@@ -1315,7 +1291,7 @@ namespace QX_Frame.Bantina.Bankinate
             //Execute Action
             object result = func();
 
-            if (result!=null)
+            if (result != null)
                 HttpRuntimeCache_Helper_DG.Cache_Add(cacheKey, result);
             HttpRuntimeCache_Helper_DG.Cache_Delete(tableName);
             return result;

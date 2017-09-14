@@ -680,6 +680,8 @@ namespace QX_Frame.Bantina.Bankinate
             if (isDESC) builder.Append(" DESC "); else builder.Append(" ASC ");
             builder.Append(") AS RowNumber,* FROM ");
             builder.Append(tableName);
+            builder.Append(" ");
+            builder.Append(orderBy.Parameters.FirstOrDefault().Name);
             builder.Append(" WHERE 1=1) AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
             builder.Append(pageSize);
             builder.Append(" * (");
@@ -774,6 +776,8 @@ namespace QX_Frame.Bantina.Bankinate
             if (isDESC) builder.Append(" DESC "); else builder.Append(" ASC ");
             builder.Append(") AS RowNumber,* FROM ");
             builder.Append(tableName);
+            builder.Append(" ");
+            builder.Append(orderBy.Parameters.FirstOrDefault().Name);
             builder.Append(" WHERE 1=1) AS TTTAAABBBLLLEEE  WHERE RowNumber > (");
             builder.Append(pageSize);
             builder.Append(" * (");

@@ -131,14 +131,25 @@ namespace QX_Frame.Bantina
         /// <param name="cacheKey"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static T CacheSupport<T>(string cacheKey, Func<T> func) where T : class
+        public static T CacheChannel<T>(string cacheHashKey, Func<T> func) where T : class
         {
-            string hashKey = cacheKey.GetHashCode().ToString();
+            string hashKey = cacheHashKey.GetHashCode().ToString();
             object cacheValue = HttpRuntimeCache_Helper_DG.Cache_Get(hashKey);
             if (cacheValue != null)
                 return cacheValue as T;
             cacheValue = func();
-            HttpRuntimeCache_Helper_DG.Cache_Add(hashKey, cacheValue, 1440);
+            HttpRuntimeCache_Helper_DG.Cache_Add(hashKey, cacheValue);
+            return cacheValue as T;
+        }
+
+        public static T CacheChannel<T>(string cacheHashKey,int keepMinutes, Func<T> func) where T : class
+        {
+            string hashKey = cacheHashKey.GetHashCode().ToString();
+            object cacheValue = HttpRuntimeCache_Helper_DG.Cache_Get(hashKey);
+            if (cacheValue != null)
+                return cacheValue as T;
+            cacheValue = func();
+            HttpRuntimeCache_Helper_DG.Cache_Add(hashKey, cacheValue, keepMinutes);
             return cacheValue as T;
         }
         #endregion

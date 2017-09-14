@@ -145,6 +145,9 @@
     <Compile Include="Task_Helper_DG.cs" />
     <Compile Include="Transaction_Helper_DG.cs" />
     <Compile Include="TypeConvert_Helper_DG.cs" />
+    <Compile Include="Validation\CheckFormatValidation.cs" />
+    <Compile Include="Validation\CheckDataNullValidation.cs" />
+    <Compile Include="Validation\FormatValidation.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

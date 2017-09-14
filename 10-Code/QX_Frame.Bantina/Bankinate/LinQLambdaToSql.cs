@@ -59,22 +59,16 @@ namespace QX_Frame.Bantina.Bankinate
         /// <returns></returns>
         public static string ConvertOrderBy<T>(Expression<Func<T, object>> orderby) where T : class
         {
-            #region Obsolete
-            //StringBuilder builder = new StringBuilder();
-            //builder.Append(orderby.Parameters.FirstOrDefault().Name);
-            //if (orderby.Body is UnaryExpression)
-            //{
-            //    UnaryExpression ue = ((UnaryExpression)orderby.Body);
-            //    builder.Append(ExpressionRouter(ue.Operand));
-            //}
-            //else
-            //{
-            //    MemberExpression order = ((MemberExpression)orderby.Body);
-            //    builder.Append(order.Member.Name);
-            //}
-            //return builder.ToString();
-            #endregion
-            return orderby.Body.ToString();
+            if (orderby.Body is UnaryExpression)
+            {
+                UnaryExpression ue = ((UnaryExpression)orderby.Body);
+                return ExpressionRouter(ue.Operand);
+            }
+            else
+            {
+                MemberExpression order = ((MemberExpression)orderby.Body);
+                return order.Member.Name;
+            }
         }
 
         #endregion

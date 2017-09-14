@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Test.ConsoleApp1.NETFramework461.Config;
+using QX_Frame.Bantina.Validation;
 
 namespace ConsoleApp
 {
@@ -20,32 +21,22 @@ namespace ConsoleApp
             //Dictionary<string, object> dataDic = new Dictionary<string, object>();
             //dataDic.Add("classid", "1");
 
-            //using (var db = new DB_QX_Frame_Test())
-            //{
-            //    if (db.Insert("TB_People", dataDic))
-            //    {
-            //        Console.WriteLine(db.Message);
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine(db.Message);
-            //    }
-            //}
+            using (var db = new DB_QX_Frame_Test())
+            {
+                //if (db.Insert("TB_People", dataDic))
+                //{
+                //    Console.WriteLine(db.Message);
+                //}
+                //else
+                //{
+                //    Console.WriteLine(db.Message);
+                //}
 
-            //Guid uid = Guid.NewGuid();
-            //using (var db = new DB_QX_Frame_Test())
-            //{
-            //    Expression<Func<TB_People, bool>> where = t => true;
-            //    where = where.And (t=> t.Name.Contains("123") || t.Age == 2);
-            //    List<TB_People> peoples = db.QueryEntities<TB_People>(where);
+                List<TB_People> peoples = db.QueryEntitiesPaging<TB_People>(2, 3, t => t.Age);
+                Console.WriteLine(peoples.Count);
+            }
 
-            //    foreach (var item in peoples)
-            //    {
-            //        Console.WriteLine(item.Uid + " - " + item.TB_ClassName.ClassName);
-            //    }
-            //}
 
-            Cache_Helper_DG.Cache_Add("123", 1);
 
 
             Console.WriteLine("any key to exit ...");

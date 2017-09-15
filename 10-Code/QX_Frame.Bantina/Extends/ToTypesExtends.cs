@@ -8,6 +8,13 @@ namespace QX_Frame.Bantina.Extends
      **/
     public static class ToTypesExtends
     {
+        #region Quick Method
+        public static string ToHashString(this object obj)
+        {
+            return obj.GetHashCode().ToString();
+        }
+        #endregion
+
         #region Convert to aim type from object
 
         public static Int16 ToShort(this object obj)

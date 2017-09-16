@@ -36,9 +36,6 @@ namespace ConsoleApp
                 Console.WriteLine(peoples.Count);
             }
 
-
-
-
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();
         }

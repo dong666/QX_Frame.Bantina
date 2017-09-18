@@ -1,4 +1,17 @@
-﻿using System;
+﻿/*********************************************************
+ * CopyRight: QIXIAO CODE BUILDER. 
+ * Version:4.2.0
+ * Author:qixiao(柒小)
+ * Create:2016-05-06
+ * Update:2017-09-18 17:50:58
+ * E-mail: dong@qixiao.me | wd8622088@foxmail.com 
+ * GitHub: https://github.com/dong666 
+ * Personal web site: http://qixiao.me 
+ * Technical WebSit: http://www.cnblogs.com/qixiaoyizhan/ 
+ * Description:
+ * Thx , Best Regards ~
+ *********************************************************/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -63,20 +76,13 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_RW))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
-                    {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType);//参数增加了commandType 可以自己编辑执行方式
-                        return cmd.ExecuteNonQuery();
-                    }
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType);//参数增加了commandType 可以自己编辑执行方式
+                    return cmd.ExecuteNonQuery();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         /// <summary>
@@ -89,20 +95,13 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_RW))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
-                    {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, parms);//参数增加了commandType 可以自己编辑执行方式
-                        return cmd.ExecuteNonQuery();
-                    }
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, parms);//参数增加了commandType 可以自己编辑执行方式
+                    return cmd.ExecuteNonQuery();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         /// <summary>
@@ -115,20 +114,13 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_RW))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
-                    {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, obj);//参数增加了commandType 可以自己编辑执行方式
-                        return cmd.ExecuteNonQuery();
-                    }
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, obj);//参数增加了commandType 可以自己编辑执行方式
+                    return cmd.ExecuteNonQuery();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         #endregion
@@ -143,20 +135,13 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
-                    {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType);
-                        return cmd.ExecuteScalar();
-                    }
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType);
+                    return cmd.ExecuteScalar();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         /// <summary>
@@ -169,21 +154,14 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
-                    {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, parms);
-                        return cmd.ExecuteScalar();
-                    }
-
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, parms);
+                    return cmd.ExecuteScalar();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+
             }
         }
         /// <summary>
@@ -196,20 +174,13 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
-                    {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, obj);
-                        return cmd.ExecuteScalar();
-                    }
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, obj);
+                    return cmd.ExecuteScalar();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         #endregion
@@ -225,17 +196,10 @@ namespace QX_Frame.Bantina
         public static SqlDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            try
-            {
-                SqlConnection conn = new SqlConnection(ConnString_R);
-                SqlCommand cmd = new SqlCommand();
-                PreparCommand(conn, cmd, commandTextOrSpName, commandType);
-                return cmd.ExecuteReader(CommandBehavior.CloseConnection);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW);
+            SqlCommand cmd = new SqlCommand();
+            PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType);
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
         /// <summary>
         /// 执行sql语句或存储过程 返回DataReader
@@ -248,17 +212,10 @@ namespace QX_Frame.Bantina
         public static SqlDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            try
-            {
-                SqlConnection conn = new SqlConnection(ConnString_R);
-                SqlCommand cmd = new SqlCommand();
-                PreparCommand(conn, cmd, commandTextOrSpName, commandType, parms);
-                return cmd.ExecuteReader(CommandBehavior.CloseConnection);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW);
+            SqlCommand cmd = new SqlCommand();
+            PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, parms);
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
         /// <summary>
         /// 执行sql语句或存储过程 返回DataReader
@@ -271,17 +228,10 @@ namespace QX_Frame.Bantina
         public static SqlDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            try
-            {
-                SqlConnection conn = new SqlConnection(ConnString_R);
-                SqlCommand cmd = new SqlCommand();
-                PreparCommand(conn, cmd, commandTextOrSpName, commandType, obj);
-                return cmd.ExecuteReader(CommandBehavior.CloseConnection);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW);
+            SqlCommand cmd = new SqlCommand();
+            PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, obj);
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
         #endregion
 
@@ -301,29 +251,22 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType);
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        DataSet ds = new DataSet();
+                        da.Fill(ds);
+                        if (ds.Tables.Count > 0)
                         {
-                            DataSet ds = new DataSet();
-                            da.Fill(ds);
-                            if (ds.Tables.Count > 0)
-                            {
-                                return ds.Tables[0];
-                            }
-                            return default(DataTable);
+                            return ds.Tables[0];
                         }
+                        return default(DataTable);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         /// <summary>
@@ -336,29 +279,22 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, parms);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, parms);
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        DataSet ds = new DataSet();
+                        da.Fill(ds);
+                        if (ds.Tables.Count > 0)
                         {
-                            DataSet ds = new DataSet();
-                            da.Fill(ds);
-                            if (ds.Tables.Count > 0)
-                            {
-                                return ds.Tables[0];
-                            }
-                            return default(DataTable);
+                            return ds.Tables[0];
                         }
+                        return default(DataTable);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         /// <summary>
@@ -371,29 +307,22 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, obj);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, obj);
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        DataSet ds = new DataSet();
+                        da.Fill(ds);
+                        if (ds.Tables.Count > 0)
                         {
-                            DataSet ds = new DataSet();
-                            da.Fill(ds);
-                            if (ds.Tables.Count > 0)
-                            {
-                                return ds.Tables[0];
-                            }
-                            return default(DataTable);
+                            return ds.Tables[0];
                         }
+                        return default(DataTable);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         #endregion
@@ -408,25 +337,18 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType);
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                        {
-                            DataSet ds = new DataSet();
-                            da.Fill(ds);
-                            return ds;
-                        }
+                        DataSet ds = new DataSet();
+                        da.Fill(ds);
+                        return ds;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         /// <summary>
@@ -439,25 +361,18 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, parms);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, parms);
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                        {
-                            DataSet ds = new DataSet();
-                            da.Fill(ds);
-                            return ds;
-                        }
+                        DataSet ds = new DataSet();
+                        da.Fill(ds);
+                        return ds;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         /// <summary>
@@ -470,25 +385,18 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            try
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(ConnString_R, ConnString_RW))
             {
-                using (SqlConnection conn = new SqlConnection(ConnString_R))
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    using (SqlCommand cmd = new SqlCommand())
+                    PreparCommand(conn.sqlConnection, cmd, commandTextOrSpName, commandType, obj);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        PreparCommand(conn, cmd, commandTextOrSpName, commandType, obj);
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                        {
-                            DataSet ds = new DataSet();
-                            da.Fill(ds);
-                            return ds;
-                        }
+                        DataSet ds = new DataSet();
+                        da.Fill(ds);
+                        return ds;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
         #endregion
@@ -545,6 +453,7 @@ namespace QX_Frame.Bantina
         }
         /// <summary>
         /// PreparCommand方法，可变参数为object需要严格按照参数顺序传参
+        /// 之所以会用object参数方法是为了我们能更方便的调用存储过程，不必去关系存储过程参数名是什么，知道它的参数顺序就可以了 sqlparameter必须指定每一个参数名称
         /// </summary>
         /// <param name="conn">sqlconnection对象</param>
         /// <param name="cmd">sqlcommmand对象</param>
@@ -572,7 +481,7 @@ namespace QX_Frame.Bantina
                 cmd.Parameters.AddRange(parms);
             }
         }
-        //之所以会用object参数方法是为了我们能更方便的调用存储过程，不必去关系存储过程参数名是什么，知道它的参数顺序就可以了 sqlparameter必须指定每一个参数名称
+
         #endregion
 
         #region 通过Model反射返回结果集 Model为 T 泛型变量的真实类型---反射返回结果集
@@ -685,7 +594,6 @@ namespace QX_Frame.Bantina
                 throw ex;
             }
         }
-
         /// <summary>
         /// 反射返回一个T类型的结果
         /// </summary>
@@ -698,5 +606,49 @@ namespace QX_Frame.Bantina
         }
 
         #endregion
+    }
+
+    /**
+     * author:qixiao
+     * time:2017-9-18 18:02:23
+     * description:safe create sqlconnection support
+     * */
+    internal class SqlConnection_WR_Safe : IDisposable
+    {
+        /// <summary>
+        /// SqlConnection
+        /// </summary>
+        public SqlConnection sqlConnection { get; set; }
+        public SqlConnection_WR_Safe(string ConnString_RW)
+        {
+            SqlConnection conn = new SqlConnection(ConnString_RW);
+            this.sqlConnection = conn;
+        }
+        /**
+         * if read db disabled,switchover to read write db immediately
+         * */
+        public SqlConnection_WR_Safe(string ConnString_R, string ConnString_RW)
+        {
+            SqlConnection conn;
+            try
+            {
+                conn = new SqlConnection(ConnString_R);
+            }
+            catch (Exception)
+            {
+                conn = new SqlConnection(ConnString_RW);
+            }
+            this.sqlConnection = conn;
+        }
+        /// <summary>
+        /// Must Close Connection when use end
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.sqlConnection != null)
+            {
+                this.sqlConnection.Dispose();
+            }
+        }
     }
 }

@@ -113,6 +113,7 @@
     <Compile Include="DateTime_Helper_DG.cs" />
     <Compile Include="EF_Helper_DG.cs" />
     <Compile Include="Encrypt_Helper_DG.cs" />
+    <Compile Include="Entities\ResponseModel.cs" />
     <Compile Include="Extends\CloneExtends.cs" />
     <Compile Include="Extends\Exception_DG.cs" />
     <Compile Include="Extends\LambdaToSqlStatementClass.cs" />

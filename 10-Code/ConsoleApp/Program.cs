@@ -32,7 +32,7 @@ namespace ConsoleApp
                 //    Console.WriteLine(db.Message);
                 //}
 
-                List<TB_People> peoples = db.QueryEntitiesPaging<TB_People>(2, 3, t => t.Age);
+                List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.Name.Contains("123"));
                 Console.WriteLine(peoples.Count);
             }
 

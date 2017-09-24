@@ -31,7 +31,6 @@ namespace ConsoleApp
                 //{
                 //    Console.WriteLine(db.Message);
                 //}
-
                 List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.Name.Contains("123"));
                 Console.WriteLine(peoples.Count);
             }

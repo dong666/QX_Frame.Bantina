@@ -3,7 +3,10 @@
   "description": "configuration file about qx_frame app start",
   "database": {
     "connectionStrings": {
-      "QX_Frame_Default": "data source=.;initial catalog=DB_QX_Frame_MS_User;persist security info=True;user id=Sa;password=Sa123456;MultipleActiveResultSets=True;App=EntityFramework",
+      "TestSqlServer": "data source=.;initial catalog=DB_QX_Frame_MS_User;persist security info=True;user id=Sa;password=Sa123456;MultipleActiveResultSets=True;App=EntityFramework",
+      "TestMysql": "Data Source=101.201.66.247;Database=db_test;User ID=qixiao;Password=CYj(9yyz*8",
+      "TestOracle": "data source=//sales-server:1521/sales.us.acme.com;user id=scott;password=tiger;",
+      "QX_Frame_Default": "data source=.;initial catalog=DB_QX_Frame_Test;persist security info=True;user id=Sa;password=Sa123456;MultipleActiveResultSets=True;App=EntityFramework",
       "DB_QX_Frame_MS_User": "data source=.;initial catalog=DB_QX_Frame_MS_User;persist security info=True;user id=Sa;password=Sa123456;MultipleActiveResultSets=True;App=EntityFramework"
     }
   },

@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Test.ConsoleApp1.NETFramework461.Config;
 using QX_Frame.Bantina.Validation;
+using System.Data.Common;
+using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace ConsoleApp
 {
@@ -21,19 +24,25 @@ namespace ConsoleApp
             //Dictionary<string, object> dataDic = new Dictionary<string, object>();
             //dataDic.Add("classid", "1");
 
-            using (var db = new DB_QX_Frame_Test())
-            {
-                //if (db.Insert("TB_People", dataDic))
-                //{
-                //    Console.WriteLine(db.Message);
-                //}
-                //else
-                //{
-                //    Console.WriteLine(db.Message);
-                //}
-                List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.Name.Contains("123"));
-                Console.WriteLine(peoples.Count);
-            }
+            //using (var db = new DB_QX_Frame_Test())
+            //{
+            //    //if (db.Insert("TB_People", dataDic))
+            //    //{
+            //    //    Console.WriteLine(db.Message);
+            //    //}
+            //    //else
+            //    //{
+            //    //    Console.WriteLine(db.Message);
+            //    //}
+            //    List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.Name.Contains("123"));
+            //    Console.WriteLine(peoples.Count);
+            //}
+            DbParameter[] parms = new DbParameter[] {
+                new MySqlParameter("?ClassId",1)
+            };
+
+            int count = Db_Helper_DG.ExecuteScalar("select COUNT(0) from student where ClassId=?ClassId", System.Data.CommandType.Text,parms).ToInt();
+            Console.WriteLine(count);
 
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();

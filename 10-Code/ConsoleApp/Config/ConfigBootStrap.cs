@@ -18,7 +18,8 @@ namespace Test.ConsoleApp1.NETFramework461.Config
 
             JObject jobject_qx_frame_config = IO_Helper_DG.Json_GetJObjectFromJsonFile("../../config/qx_frame.config.json");//get json configuration file
 
-            QX_Frame_Helper_DG_Config.ConnectionString_DB_QX_Frame_Default = jobject_qx_frame_config["database"]["connectionStrings"]["QX_Frame_Default"].ToString();
+            QX_Frame_Helper_DG_Config.ConnectionString_DB_QX_Frame_Default = jobject_qx_frame_config["database"]["connectionStrings"]["TestMysql"].ToString();
+            QX_Frame_Helper_DG_Config.DataBaseType = QX_Frame.Bantina.Options.Opt_DataBaseType.MySql;
             QX_Frame_Helper_DG_Config.Log_Location_General = jobject_qx_frame_config["log"]["Log_Location_General"].ToString();
             QX_Frame_Helper_DG_Config.Log_Location_Error = jobject_qx_frame_config["log"]["Log_Location_Error"].ToString();
             QX_Frame_Helper_DG_Config.Log_Location_Use = jobject_qx_frame_config["log"]["Log_Location_Use"].ToString();

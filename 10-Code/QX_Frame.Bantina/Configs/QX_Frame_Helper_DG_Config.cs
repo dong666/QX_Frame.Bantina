@@ -19,6 +19,8 @@ namespace QX_Frame.Bantina.Configs
         /// </summary>
         public static string ConnectionString_DB_QX_Frame_Default { get; set; } = default(string);
 
+        public static Opt_DataBaseType DataBaseType { get; set; } = Opt_DataBaseType.SqlServer;
+
         #endregion
 
         #region log

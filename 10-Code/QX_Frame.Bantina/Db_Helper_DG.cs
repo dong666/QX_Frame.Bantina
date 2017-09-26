@@ -2,8 +2,8 @@
  * CopyRight: QIXIAO CODE BUILDER. 
  * Version:4.2.0
  * Author:qixiao(柒小)
- * Create:2016-05-06
- * Update:2017-09-18 17:50:58
+ * Create:2017-9-26 17:41:42
+ * Update:2017-9-26 17:41:42
  * E-mail: dong@qixiao.me | wd8622088@foxmail.com 
  * GitHub: https://github.com/dong666 
  * Personal web site: http://qixiao.me 
@@ -11,25 +11,22 @@
  * Description:
  * Thx , Best Regards ~
  *********************************************************/
+using MySql.Data.MySqlClient;
+using Oracle.ManagedDataAccess.Client;
+using QX_Frame.Bantina.Options;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 
-
 namespace QX_Frame.Bantina
 {
-    /// <summary>
-    /// SqlHelper
-    /// 此类为抽象类，不允许实例化，在应用时直接调用即可;
-    /// author qixiao;
-    /// release Time :20160506;
-    /// </summary>
-    public abstract class Sql_Helper_DG
+    public abstract class Db_Helper_DG
     {
         #region ConnString 链接字符串声明
 
@@ -55,10 +52,14 @@ namespace QX_Frame.Bantina
         /// 连接字符串 ConnString_R 读数据库使用
         /// </summary>
         public static string ConnString_R = _connString;
+        /// <summary>
+        /// DataBaseType Select default:sqlserver
+        /// </summary>
+        public static Opt_DataBaseType dataBaseType = Configs.QX_Frame_Helper_DG_Config.DataBaseType;
 
         #endregion
 
-        static Sql_Helper_DG()
+        static Db_Helper_DG()
         {
             //if (string.IsNullOrEmpty(ConnString_RW) || string.IsNullOrEmpty(ConnString_R))
             //{
@@ -76,12 +77,12 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType);//参数增加了commandType 可以自己编辑执行方式
-                    return cmd.ExecuteNonQuery();
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);//参数增加了commandType 可以自己编辑执行方式
+                    return cmd.DbCommand.ExecuteNonQuery();
                 }
             }
         }
@@ -93,14 +94,14 @@ namespace QX_Frame.Bantina
         /// <param name="commandType">命令类型 t</param>
         /// <param name="parms">SqlParameter[]参数数组，允许空</param>
         /// <returns>返回受影响的行数</returns>
-        public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
+        public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, parms);//参数增加了commandType 可以自己编辑执行方式
-                    return cmd.ExecuteNonQuery();
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);//参数增加了commandType 可以自己编辑执行方式
+                    return cmd.DbCommand.ExecuteNonQuery();
                 }
             }
         }
@@ -114,12 +115,12 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, obj);//参数增加了commandType 可以自己编辑执行方式
-                    return cmd.ExecuteNonQuery();
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);//参数增加了commandType 可以自己编辑执行方式
+                    return cmd.DbCommand.ExecuteNonQuery();
                 }
             }
         }
@@ -135,12 +136,12 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType);
-                    return cmd.ExecuteScalar();
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);
+                    return cmd.DbCommand.ExecuteScalar();
                 }
             }
         }
@@ -152,14 +153,14 @@ namespace QX_Frame.Bantina
         /// <param name="commandType">命令类型</param>
         /// <param name="parms">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
+        public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, parms);
-                    return cmd.ExecuteScalar();
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
+                    return cmd.DbCommand.ExecuteScalar();
                 }
 
             }
@@ -174,12 +175,12 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, obj);
-                    return cmd.ExecuteScalar();
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
+                    return cmd.DbCommand.ExecuteScalar();
                 }
             }
         }
@@ -193,13 +194,13 @@ namespace QX_Frame.Bantina
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">命令类型 有默认值CommandType.Text</param>
         /// <returns></returns>
-        public static SqlDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType = CommandType.Text)
+        public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_R, ConnString_RW);
-            SqlCommand cmd = new SqlCommand();
-            PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType);
-            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW);
+            DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
+            PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);
+            return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
         }
         /// <summary>
         /// 执行sql语句或存储过程 返回DataReader
@@ -209,13 +210,13 @@ namespace QX_Frame.Bantina
         /// <param name="commandType">命令类型</param>
         /// <param name="parms">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static SqlDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
+        public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_R, ConnString_RW);
-            SqlCommand cmd = new SqlCommand();
-            PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, parms);
-            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW);
+            DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
+            PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
+            return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
         }
         /// <summary>
         /// 执行sql语句或存储过程 返回DataReader
@@ -225,13 +226,13 @@ namespace QX_Frame.Bantina
         /// <param name="commandType">命令类型</param>
         /// <param name="obj">object[]参数数组，允许空</param>
         /// <returns></returns>
-        public static SqlDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params object[] obj)
+        public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_R, ConnString_RW);
-            SqlCommand cmd = new SqlCommand();
-            PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, obj);
-            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW);
+            DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
+            PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
+            return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
         }
         #endregion
 
@@ -251,12 +252,12 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType);
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);
+                    using (DbDataAdapter da = new SqlDataAdapter(cmd.DbCommand as SqlCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
@@ -277,14 +278,14 @@ namespace QX_Frame.Bantina
         /// <param name="commandType">命令类型</param>
         /// <param name="parms">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
+        public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, parms);
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
+                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType,cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
@@ -307,12 +308,12 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, obj);
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
+                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
@@ -337,12 +338,12 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType);
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);
+                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
@@ -359,14 +360,14 @@ namespace QX_Frame.Bantina
         /// <param name="commandType">命令类型</param>
         /// <param name="parms">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
+        public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, parms);
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
+                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
@@ -385,12 +386,12 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(Options.Opt_DataBaseType.SqlServer, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection as SqlConnection, cmd, commandTextOrSpName, commandType, obj);
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
+                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
@@ -409,7 +410,7 @@ namespace QX_Frame.Bantina
         /// <param name="cmd">sqlcommmand对象</param>
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">语句的类型</param>
-        private static void PreparCommand(SqlConnection conn, SqlCommand cmd, string commandTextOrSpName, CommandType commandType)
+        private static void PreparCommand(DbConnection conn, DbCommand cmd, string commandTextOrSpName, CommandType commandType)
         {
             //打开连接
             if (conn.State != ConnectionState.Open)
@@ -431,7 +432,7 @@ namespace QX_Frame.Bantina
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">语句的类型</param>
         /// <param name="parms">参数，sqlparameter类型，需要指出所有的参数名称</param>
-        private static void PreparCommand(SqlConnection conn, SqlCommand cmd, string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
+        private static void PreparCommand(DbConnection conn, DbCommand cmd, string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
         {
             //打开连接
             if (conn.State != ConnectionState.Open)
@@ -460,9 +461,8 @@ namespace QX_Frame.Bantina
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">语句的类型</param>
         /// <param name="parms">参数，object类型，需要按顺序赋值</param>
-        private static void PreparCommand(SqlConnection conn, SqlCommand cmd, string commandTextOrSpName, CommandType commandType, params object[] parms)
+        private static void PreparCommand(DbConnection conn, DbCommand cmd, string commandTextOrSpName, CommandType commandType, params object[] parms)
         {
-
             //打开连接
             if (conn.State != ConnectionState.Open)
             {
@@ -481,7 +481,6 @@ namespace QX_Frame.Bantina
                 cmd.Parameters.AddRange(parms);
             }
         }
-
         #endregion
 
         #region 通过Model反射返回结果集 Model为 T 泛型变量的真实类型---反射返回结果集
@@ -551,7 +550,7 @@ namespace QX_Frame.Bantina
         /// <typeparam name="T">Model中对象类型</typeparam>
         /// <param name="reader">SqlDataReader结果集</param>
         /// <returns></returns>
-        public static T Return_T_ByDataReader<T>(SqlDataReader reader)
+        public static T Return_T_ByDataReader<T>(DbDataReader reader)
         {
             try
             {
@@ -604,7 +603,145 @@ namespace QX_Frame.Bantina
         {
             return Return_List_T_ByDataSet<T>(ds).FirstOrDefault();
         }
-
         #endregion
     }
+    /**
+    * author:qixiao
+    * time:2017-9-18 18:02:23
+    * description:safe create sqlconnection support
+    * */
+    internal class SqlConnection_WR_Safe : IDisposable
+    {
+        /// <summary>
+        /// SqlConnection
+        /// </summary>
+        public DbConnection DbConnection { get; set; }
+
+        public SqlConnection_WR_Safe(Opt_DataBaseType dataBaseType, string ConnString_RW)
+        {
+            this.DbConnection = GetDbConnection(dataBaseType, ConnString_RW);
+        }
+        /**
+         * if read db disabled,switchover to read write db immediately
+         * */
+        public SqlConnection_WR_Safe(Opt_DataBaseType dataBaseType, string ConnString_R, string ConnString_RW)
+        {
+            try
+            {
+                this.DbConnection = GetDbConnection(dataBaseType, ConnString_R);
+            }
+            catch (Exception)
+            {
+                this.DbConnection = GetDbConnection(dataBaseType, ConnString_RW);
+            }
+        }
+
+        /// <summary>
+        /// GetDataBase ConnectionString by database type and connection string -- private use
+        /// </summary>
+        /// <param name="dataBaseType"></param>
+        /// <param name="ConnString"></param>
+        /// <returns></returns>
+        private DbConnection GetDbConnection(Opt_DataBaseType dataBaseType, string ConnString)
+        {
+            switch (dataBaseType)
+            {
+                case Opt_DataBaseType.SqlServer:
+                    return new SqlConnection(ConnString);
+                case Opt_DataBaseType.MySql:
+                    return new MySqlConnection(ConnString);
+                case Opt_DataBaseType.Oracle:
+                    return new OracleConnection(ConnString);
+                default:
+                    return new SqlConnection(ConnString);
+            }
+        }
+        /// <summary>
+        /// Must Close Connection after use
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.DbConnection != null)
+            {
+                this.DbConnection.Dispose();
+            }
+        }
+    }
+    /// <summary>
+    /// Common sqlcommand
+    /// </summary>
+    internal class DbCommandCommon:IDisposable
+    {
+        /// <summary>
+        /// common dbcommand
+        /// </summary>
+        public DbCommand DbCommand { get; set; }
+        public DbCommandCommon(Opt_DataBaseType dataBaseType)
+        {
+            this.DbCommand = GetDbCommand(dataBaseType);
+        }
+
+        /// <summary>
+        /// Get DbCommand select database type
+        /// </summary>
+        /// <param name="dataBaseType"></param>
+        /// <returns></returns>
+        private DbCommand GetDbCommand(Opt_DataBaseType dataBaseType)
+        {
+            switch (dataBaseType)
+            {
+                case Opt_DataBaseType.SqlServer:
+                    return new SqlCommand();
+                case Opt_DataBaseType.MySql:
+                    return new MySqlCommand();
+                case Opt_DataBaseType.Oracle:
+                    return new OracleCommand();
+                default:
+                    return new SqlCommand();
+            }
+        }
+        /// <summary>
+        /// must dispose after use
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.DbCommand!=null)
+            {
+                this.DbCommand.Dispose();
+            }
+        }
+    }
+    internal class DbDataAdapterCommon :DbDataAdapter, IDisposable
+    {
+       public DbDataAdapter DbDataAdapter { get; set; }
+        public DbDataAdapterCommon(Opt_DataBaseType dataBaseType,DbCommand dbCommand)
+        {
+            this.DbDataAdapter = GetDbAdapter(dataBaseType, dbCommand);
+        }
+        private DbDataAdapter GetDbAdapter(Opt_DataBaseType dataBaseType,DbCommand dbCommand)
+        {
+            switch (dataBaseType)
+            {
+                case Opt_DataBaseType.SqlServer:
+                    return new SqlDataAdapter(dbCommand as SqlCommand);
+                case Opt_DataBaseType.MySql:
+                    return new MySqlDataAdapter(dbCommand as MySqlCommand);
+                case Opt_DataBaseType.Oracle:
+                    return new OracleDataAdapter(dbCommand as OracleCommand);
+                default:
+                    return new SqlDataAdapter(dbCommand as SqlCommand);
+            }
+        }
+        /// <summary>
+        /// must dispose after use
+        /// </summary>
+        public new void Dispose()
+        {
+            if (this.DbDataAdapter != null)
+            {
+                this.DbDataAdapter.Dispose();
+            }
+        }
+    }
+
 }

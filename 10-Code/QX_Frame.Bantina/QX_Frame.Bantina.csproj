@@ -45,6 +45,10 @@
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -59,6 +63,9 @@
     </Reference>
     <Reference Include="NPOI.OpenXmlFormats, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <HintPath>..\packages\RabbitMQ.Client.5.0.1\lib\net451\RabbitMQ.Client.dll</HintPath>
@@ -111,6 +118,7 @@
     <Compile Include="Convert_Helper_DG.cs" />
     <Compile Include="Cookie_Helper_DG.cs" />
     <Compile Include="DateTime_Helper_DG.cs" />
+    <Compile Include="Db_Helper_DG.cs" />
     <Compile Include="EF_Helper_DG.cs" />
     <Compile Include="Encrypt_Helper_DG.cs" />
     <Compile Include="Entities\ResponseModel.cs" />
@@ -131,6 +139,7 @@
     <Compile Include="Mail_Helper_DG.cs" />
     <Compile Include="Office_Helper_DG.cs" />
     <Compile Include="Options\Opt_CacheServer.cs" />
+    <Compile Include="Options\Opt_DataBaseType.cs" />
     <Compile Include="Options\Opt_LogType.cs" />
     <Compile Include="PredicateBuilder_Helper_DG.cs" />
     <Compile Include="ProcessFlow_Helper_DG.cs" />

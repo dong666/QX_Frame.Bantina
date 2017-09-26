@@ -711,6 +711,9 @@ namespace QX_Frame.Bantina
             }
         }
     }
+    /// <summary>
+    /// DbDataAdapterCommon
+    /// </summary>
     internal class DbDataAdapterCommon :DbDataAdapter, IDisposable
     {
        public DbDataAdapter DbDataAdapter { get; set; }

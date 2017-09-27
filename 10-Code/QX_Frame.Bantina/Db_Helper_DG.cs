@@ -17,7 +17,6 @@ using QX_Frame.Bantina.Options;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -77,11 +76,11 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);//参数增加了commandType 可以自己编辑执行方式
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);
                     return cmd.DbCommand.ExecuteNonQuery();
                 }
             }
@@ -96,7 +95,7 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -115,7 +114,7 @@ namespace QX_Frame.Bantina
         /// <returns>返回受影响的行数</returns>
         public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -136,7 +135,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -155,7 +154,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -175,7 +174,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -186,7 +185,7 @@ namespace QX_Frame.Bantina
         }
         #endregion
 
-        #region ExecuteReader 执行sql语句或者存储过程,返回DataReader---DaataReader
+        #region ExecuteScalar 执行sql语句或者存储过程,返回DataReader---DaataReader
         /// <summary>
         /// 执行sql语句或存储过程 返回DataReader 不带参数
         /// </summary>
@@ -197,7 +196,7 @@ namespace QX_Frame.Bantina
         public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW);
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW);
             DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
             PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);
             return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
@@ -213,7 +212,7 @@ namespace QX_Frame.Bantina
         public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW);
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW);
             DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
             PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
             return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
@@ -229,7 +228,7 @@ namespace QX_Frame.Bantina
         public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW);
+            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW);
             DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
             PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
             return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
@@ -252,7 +251,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -280,12 +279,12 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
                     PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
-                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType,cmd.DbCommand))
+                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
@@ -308,7 +307,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -338,7 +337,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType = CommandType.Text)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -362,7 +361,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -386,7 +385,7 @@ namespace QX_Frame.Bantina
         /// <returns></returns>
         public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params object[] obj)
         {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType,ConnString_R, ConnString_RW))
+            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
@@ -399,6 +398,36 @@ namespace QX_Frame.Bantina
                     }
                 }
             }
+        }
+        #endregion
+
+        #region ExecuteList Entity 执行sql语句或者存储过程，返回一个List<T>---List<T>
+        public static List<Entity> ExecuteList<Entity>(string commandTextOrSpName, CommandType commandType = CommandType.Text) where Entity : class
+        {
+            return GetListFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType));
+        }
+        public static List<Entity> ExecuteList<Entity>(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms) where Entity : class
+        {
+            return GetListFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, parms));
+        }
+        public static List<Entity> ExecuteList<Entity>(string commandTextOrSpName, CommandType commandType, params object[] obj) where Entity : class
+        {
+            return GetListFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, obj));
+        }
+        #endregion
+
+        #region ExecuteEntity 执行sql语句或者存储过程，返回一个Entity---Entity
+        public static Entity ExecuteEntity<Entity>(string commandTextOrSpName, CommandType commandType = CommandType.Text) where Entity : class
+        {
+            return GetEntityFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType));
+        }
+        public static Entity ExecuteEntity<Entity>(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms) where Entity : class
+        {
+            return GetEntityFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, parms));
+        }
+        public static Entity ExecuteEntity<Entity>(string commandTextOrSpName, CommandType commandType, params object[] obj) where Entity : class
+        {
+            return GetEntityFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, obj));
         }
         #endregion
 
@@ -483,87 +512,31 @@ namespace QX_Frame.Bantina
         }
         #endregion
 
-        #region 通过Model反射返回结果集 Model为 T 泛型变量的真实类型---反射返回结果集
+        #region 通过Model反射返回结果集 Model为 Entity 泛型变量的真实类型---反射返回结果集
         /// <summary>
         /// 反射返回一个List T 类型的结果集
         /// </summary>
         /// <typeparam name="T">Model中对象类型</typeparam>
         /// <param name="ds">DataSet结果集</param>
         /// <returns></returns>
-        public static List<T> Return_List_T_ByDataSet<T>(DataSet ds)
+        public static List<Entity> GetListFromDataSet<Entity>(DataSet ds) where Entity : class
         {
-            try
-            {
-                List<T> list = new List<T>();//实例化一个list对象
-                PropertyInfo[] propertyInfos = typeof(T).GetProperties();     //获取T对象的所有公共属性
+            List<Entity> list = new List<Entity>();//实例化一个list对象
+            PropertyInfo[] propertyInfos = typeof(Entity).GetProperties();     //获取T对象的所有公共属性
 
-                DataTable dt = ds.Tables[0];    // 获取到ds的dt
-                if (dt.Rows.Count > 0)
-                {
-                    //判断读取的行是否>0 即数据库数据已被读取
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        T model1 = System.Activator.CreateInstance<T>();//实例化一个对象，便于往list里填充数据
-                        foreach (PropertyInfo propertyInfo in propertyInfos)
-                        {
-                            try
-                            {
-                                //遍历模型里所有的字段
-                                if (row[propertyInfo.Name] != System.DBNull.Value)
-                                {
-                                    //判断值是否为空，如果空赋值为null见else
-                                    if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                                    {
-                                        //如果convertsionType为nullable类，声明一个NullableConverter类，该类提供从Nullable类到基础基元类型的转换
-                                        NullableConverter nullableConverter = new NullableConverter(propertyInfo.PropertyType);
-                                        //将convertsionType转换为nullable对的基础基元类型
-                                        propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], nullableConverter.UnderlyingType), null);
-                                    }
-                                    else
-                                    {
-                                        propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], propertyInfo.PropertyType), null);
-                                    }
-                                }
-                                else
-                                {
-                                    propertyInfo.SetValue(model1, null, null);//如果数据库的值为空，则赋值为null
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                propertyInfo.SetValue(model1, null, null);//如果数据库的值为空，则赋值为null
-                            }
-                        }
-                        list.Add(model1);//将对象填充到list中
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
+            DataTable dt = ds.Tables[0];    // 获取到ds的dt
+            if (dt.Rows.Count > 0)
             {
-                throw ex;
-            }
-        }
-        /// <summary>
-        /// 反射返回一个T类型的结果
-        /// </summary>
-        /// <typeparam name="T">Model中对象类型</typeparam>
-        /// <param name="reader">SqlDataReader结果集</param>
-        /// <returns></returns>
-        public static T Return_T_ByDataReader<T>(DbDataReader reader)
-        {
-            try
-            {
-                T model = System.Activator.CreateInstance<T>();                     //实例化一个T类型对象
-                PropertyInfo[] propertyInfos = model.GetType().GetProperties();     //获取T对象的所有公共属性
-                using (reader)
+                //判断读取的行是否>0 即数据库数据已被读取
+                foreach (DataRow row in dt.Rows)
                 {
-                    if (reader.Read())
+                    Entity model1 = System.Activator.CreateInstance<Entity>();//实例化一个对象，便于往list里填充数据
+                    foreach (PropertyInfo propertyInfo in propertyInfos)
                     {
-                        foreach (PropertyInfo propertyInfo in propertyInfos)
+                        try
                         {
                             //遍历模型里所有的字段
-                            if (reader[propertyInfo.Name] != System.DBNull.Value)
+                            if (row[propertyInfo.Name] != System.DBNull.Value)
                             {
                                 //判断值是否为空，如果空赋值为null见else
                                 if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
@@ -571,27 +544,69 @@ namespace QX_Frame.Bantina
                                     //如果convertsionType为nullable类，声明一个NullableConverter类，该类提供从Nullable类到基础基元类型的转换
                                     NullableConverter nullableConverter = new NullableConverter(propertyInfo.PropertyType);
                                     //将convertsionType转换为nullable对的基础基元类型
-                                    propertyInfo.SetValue(model, Convert.ChangeType(reader[propertyInfo.Name], nullableConverter.UnderlyingType), null);
+                                    propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], nullableConverter.UnderlyingType), null);
                                 }
                                 else
                                 {
-                                    propertyInfo.SetValue(model, Convert.ChangeType(reader[propertyInfo.Name], propertyInfo.PropertyType), null);
+                                    propertyInfo.SetValue(model1, Convert.ChangeType(row[propertyInfo.Name], propertyInfo.PropertyType), null);
                                 }
                             }
                             else
                             {
-                                propertyInfo.SetValue(model, null, null);//如果数据库的值为空，则赋值为null
+                                propertyInfo.SetValue(model1, null, null);//如果数据库的值为空，则赋值为null
                             }
                         }
-                        return model;//返回T类型的赋值后的对象 model
+                        catch (Exception)
+                        {
+                            propertyInfo.SetValue(model1, null, null);//如果数据库的值为空，则赋值为null
+                        }
                     }
+                    list.Add(model1);//将对象填充到list中
                 }
-                return default(T);//返回引用类型和值类型的默认值0或null
             }
-            catch (Exception ex)
+            return list;
+        }
+        /// <summary>
+        /// 反射返回一个T类型的结果
+        /// </summary>
+        /// <typeparam name="T">Model中对象类型</typeparam>
+        /// <param name="reader">SqlDataReader结果集</param>
+        /// <returns></returns>
+        public static Entity GetEntityFromDataReader<Entity>(DbDataReader reader) where Entity : class
+        {
+            Entity model = System.Activator.CreateInstance<Entity>();           //实例化一个T类型对象
+            PropertyInfo[] propertyInfos = model.GetType().GetProperties();     //获取T对象的所有公共属性
+            using (reader)
             {
-                throw ex;
+                if (reader.Read())
+                {
+                    foreach (PropertyInfo propertyInfo in propertyInfos)
+                    {
+                        //遍历模型里所有的字段
+                        if (reader[propertyInfo.Name] != System.DBNull.Value)
+                        {
+                            //判断值是否为空，如果空赋值为null见else
+                            if (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                            {
+                                //如果convertsionType为nullable类，声明一个NullableConverter类，该类提供从Nullable类到基础基元类型的转换
+                                NullableConverter nullableConverter = new NullableConverter(propertyInfo.PropertyType);
+                                //将convertsionType转换为nullable对的基础基元类型
+                                propertyInfo.SetValue(model, Convert.ChangeType(reader[propertyInfo.Name], nullableConverter.UnderlyingType), null);
+                            }
+                            else
+                            {
+                                propertyInfo.SetValue(model, Convert.ChangeType(reader[propertyInfo.Name], propertyInfo.PropertyType), null);
+                            }
+                        }
+                        else
+                        {
+                            propertyInfo.SetValue(model, null, null);//如果数据库的值为空，则赋值为null
+                        }
+                    }
+                    return model;//返回T类型的赋值后的对象 model
+                }
             }
+            return default(Entity);//返回引用类型和值类型的默认值0或null
         }
         /// <summary>
         /// 反射返回一个T类型的结果
@@ -599,9 +614,9 @@ namespace QX_Frame.Bantina
         /// <typeparam name="T">Model中对象类型</typeparam>
         /// <param name="ds">DataSet结果集</param>
         /// <returns></returns>
-        public static T Return_T_ByDataSet<T>(DataSet ds)
+        public static Entity GetEntityFromDataSet<Entity>(DataSet ds) where Entity : class
         {
-            return Return_List_T_ByDataSet<T>(ds).FirstOrDefault();
+            return GetListFromDataSet<Entity>(ds).FirstOrDefault();
         }
         #endregion
     }
@@ -670,7 +685,7 @@ namespace QX_Frame.Bantina
     /// <summary>
     /// Common sqlcommand
     /// </summary>
-    internal class DbCommandCommon:IDisposable
+    internal class DbCommandCommon : IDisposable
     {
         /// <summary>
         /// common dbcommand
@@ -705,7 +720,7 @@ namespace QX_Frame.Bantina
         /// </summary>
         public void Dispose()
         {
-            if (this.DbCommand!=null)
+            if (this.DbCommand != null)
             {
                 this.DbCommand.Dispose();
             }
@@ -714,25 +729,28 @@ namespace QX_Frame.Bantina
     /// <summary>
     /// DbDataAdapterCommon
     /// </summary>
-    internal class DbDataAdapterCommon :DbDataAdapter, IDisposable
+    internal class DbDataAdapterCommon : DbDataAdapter, IDisposable
     {
-       public DbDataAdapter DbDataAdapter { get; set; }
-        public DbDataAdapterCommon(Opt_DataBaseType dataBaseType,DbCommand dbCommand)
+        public DbDataAdapter DbDataAdapter { get; set; }
+        public DbDataAdapterCommon(Opt_DataBaseType dataBaseType, DbCommand dbCommand)
         {
+            //get dbAdapter
             this.DbDataAdapter = GetDbAdapter(dataBaseType, dbCommand);
+            //provid select command
+            this.SelectCommand = dbCommand;
         }
-        private DbDataAdapter GetDbAdapter(Opt_DataBaseType dataBaseType,DbCommand dbCommand)
+        private DbDataAdapter GetDbAdapter(Opt_DataBaseType dataBaseType, DbCommand dbCommand)
         {
             switch (dataBaseType)
             {
                 case Opt_DataBaseType.SqlServer:
-                    return new SqlDataAdapter(dbCommand as SqlCommand);
+                    return new SqlDataAdapter();
                 case Opt_DataBaseType.MySql:
-                    return new MySqlDataAdapter(dbCommand as MySqlCommand);
+                    return new MySqlDataAdapter();
                 case Opt_DataBaseType.Oracle:
-                    return new OracleDataAdapter(dbCommand as OracleCommand);
+                    return new OracleDataAdapter();
                 default:
-                    return new SqlDataAdapter(dbCommand as SqlCommand);
+                    return new SqlDataAdapter();
             }
         }
         /// <summary>
@@ -746,5 +764,4 @@ namespace QX_Frame.Bantina
             }
         }
     }
-
 }

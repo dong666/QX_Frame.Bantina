@@ -28,7 +28,9 @@ namespace QX_Frame.Bantina
     /// 此类为抽象类，不允许实例化，在应用时直接调用即可;
     /// author qixiao;
     /// release Time :20160506;
+    /// the end of update at:2017-9-27 10:55:22,class is Obsolete please use Db_Helper_DG which is new support
     /// </summary>
+    [Obsolete("code has been migrated to Db_Helper_DG,please use Db_Helper_DG implement the same operatioin! -- QX_Frame 2017-9-27 15:11:12")]
     public abstract class Sql_Helper_DG
     {
         #region ConnString 链接字符串声明

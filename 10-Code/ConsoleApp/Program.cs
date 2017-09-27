@@ -37,12 +37,12 @@ namespace ConsoleApp
             //    List<TB_People> peoples = db.QueryEntities<TB_People>(t=>t.Name.Contains("123"));
             //    Console.WriteLine(peoples.Count);
             //}
-            DbParameter[] parms = new DbParameter[] {
-                new MySqlParameter("?ClassId",1)
-            };
 
-            int count = Db_Helper_DG.ExecuteScalar("select COUNT(0) from student where ClassId=?ClassId", System.Data.CommandType.Text,parms).ToInt();
-            Console.WriteLine(count);
+            List<TB_People> peopleList = Db_Helper_DG.ExecuteList<TB_People>("select * from TB_People where ClassId=@ClassId", System.Data.CommandType.Text, new SqlParameter("@ClassId", 1));
+            foreach (var item in peopleList)
+            {
+                Console.WriteLine(item.Name);
+            }
 
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();

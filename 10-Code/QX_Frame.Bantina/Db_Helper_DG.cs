@@ -256,7 +256,7 @@ namespace QX_Frame.Bantina
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
                     PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType);
-                    using (DbDataAdapter da = new SqlDataAdapter(cmd.DbCommand as SqlCommand))
+                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);

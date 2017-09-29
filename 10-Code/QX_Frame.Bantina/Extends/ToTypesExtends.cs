@@ -16,7 +16,10 @@ namespace QX_Frame.Bantina.Extends
         #endregion
 
         #region Convert to aim type from object
-
+        public static Boolean ToBoolean(this object obj)
+        {
+            return Convert.ToBoolean(obj);
+        }
         public static Int16 ToShort(this object obj)
         {
             return Convert.ToInt16(obj);

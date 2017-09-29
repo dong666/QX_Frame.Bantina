@@ -12,7 +12,6 @@ using Test.ConsoleApp1.NETFramework461.Config;
 using QX_Frame.Bantina.Validation;
 using System.Data.Common;
 using System.Data.SqlClient;
-using MySql.Data.MySqlClient;
 
 namespace ConsoleApp
 {
@@ -38,7 +37,7 @@ namespace ConsoleApp
             //    Console.WriteLine(peoples.Count);
             //}
 
-            List<TB_People> peopleList = Db_Helper_DG.ExecuteList<TB_People>("select * from TB_People where ClassId=@ClassId", System.Data.CommandType.Text, new SqlParameter("ClassId", 1));
+            List<TB_People> peopleList = Db_Helper_DG.ExecuteList<TB_People>("select * from TB_People where ClassId=@ClassId", System.Data.CommandType.Text, new Dictionary<string, object> { {"ClassId", 1} });
             foreach (var item in peopleList)
             {
                 Console.WriteLine(item.Name);

@@ -91,34 +91,15 @@ namespace QX_Frame.Bantina
         /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">命令类型 t</param>
-        /// <param name="parms">SqlParameter[]参数数组，允许空</param>
+        /// <param name="dictionary">SqlParameter[]参数数组，允许空</param>
         /// <returns>返回受影响的行数</returns>
-        public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
+        public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary)
         {
             using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);//参数增加了commandType 可以自己编辑执行方式
-                    return cmd.DbCommand.ExecuteNonQuery();
-                }
-            }
-        }
-        /// <summary>
-        /// 执行sql命令，返回受影响的行数。
-        /// </summary>
-        /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
-        /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
-        /// <param name="commandType">命令类型</param>
-        /// <param name="obj">object[]参数数组，允许空</param>
-        /// <returns>返回受影响的行数</returns>
-        public static int ExecuteNonQuery(string commandTextOrSpName, CommandType commandType, params object[] obj)
-        {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_RW))
-            {
-                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
-                {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);//参数增加了commandType 可以自己编辑执行方式
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, dictionary);//参数增加了commandType 可以自己编辑执行方式
                     return cmd.DbCommand.ExecuteNonQuery();
                 }
             }
@@ -150,37 +131,18 @@ namespace QX_Frame.Bantina
         /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">命令类型</param>
-        /// <param name="parms">SqlParameter[]参数数组，允许空</param>
+        /// <param name="dictionary">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
+        public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary)
         {
             using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, dictionary);
                     return cmd.DbCommand.ExecuteScalar();
                 }
 
-            }
-        }
-        /// <summary>
-        /// 执行sql语句或存储过程 返回ExecuteScalar （返回自增的ID）
-        /// </summary>
-        /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
-        /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
-        /// <param name="commandType">命令类型</param>
-        /// <param name="obj">object[]参数数组，允许空</param>
-        /// <returns></returns>
-        public static object ExecuteScalar(string commandTextOrSpName, CommandType commandType, params object[] obj)
-        {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
-            {
-                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
-                {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
-                    return cmd.DbCommand.ExecuteScalar();
-                }
             }
         }
         #endregion
@@ -207,30 +169,14 @@ namespace QX_Frame.Bantina
         /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">命令类型</param>
-        /// <param name="parms">SqlParameter[]参数数组，允许空</param>
+        /// <param name="dictionary">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
+        public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary)
         {
             //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
             SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW);
             DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
-            PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
-            return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
-        }
-        /// <summary>
-        /// 执行sql语句或存储过程 返回DataReader
-        /// </summary>
-        /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
-        /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
-        /// <param name="commandType">命令类型</param>
-        /// <param name="obj">object[]参数数组，允许空</param>
-        /// <returns></returns>
-        public static DbDataReader ExecuteReader(string commandTextOrSpName, CommandType commandType, params object[] obj)
-        {
-            //sqlDataReader不能用using 会关闭conn 导致不能获取到返回值。注意：DataReader获取值时必须保持连接状态
-            SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW);
-            DbCommandCommon cmd = new DbCommandCommon(dataBaseType);
-            PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
+            PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, dictionary);
             return cmd.DbCommand.ExecuteReader(CommandBehavior.CloseConnection);
         }
         #endregion
@@ -275,43 +221,15 @@ namespace QX_Frame.Bantina
         /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">命令类型</param>
-        /// <param name="parms">SqlParameter[]参数数组，允许空</param>
+        /// <param name="dictionary">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
+        public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary)
         {
             using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
-                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
-                    {
-                        DataSet ds = new DataSet();
-                        da.Fill(ds);
-                        if (ds.Tables.Count > 0)
-                        {
-                            return ds.Tables[0];
-                        }
-                        return default(DataTable);
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// 执行sql语句或存储过程，返回DataTable
-        /// </summary>
-        /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
-        /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
-        /// <param name="commandType">命令类型 </param>
-        /// <param name="obj">object[]参数数组，允许空</param>
-        /// <returns></returns>
-        public static DataTable ExecuteDataTable(string commandTextOrSpName, CommandType commandType, params object[] obj)
-        {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
-            {
-                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
-                {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, dictionary);
                     using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
@@ -357,39 +275,15 @@ namespace QX_Frame.Bantina
         /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">命令类型</param>
-        /// <param name="parms">SqlParameter[]参数数组，允许空</param>
+        /// <param name="dictionary">SqlParameter[]参数数组，允许空</param>
         /// <returns></returns>
-        public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms)
+        public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary)
         {
             using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
             {
                 using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
                 {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, parms);
-                    using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
-                    {
-                        DataSet ds = new DataSet();
-                        da.Fill(ds);
-                        return ds;
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// 执行sql语句或存储过程，返回DataSet
-        /// </summary>
-        /// <param name="ConnString">连接字符串，可以自定义，可以以使用SqlHelper_DG.ConnString</param>
-        /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
-        /// <param name="commandType">命令类型 </param>
-        /// <param name="obj">object[]参数数组，允许空</param>
-        /// <returns></returns>
-        public static DataSet ExecuteDataSet(string commandTextOrSpName, CommandType commandType, params object[] obj)
-        {
-            using (SqlConnection_WR_Safe conn = new SqlConnection_WR_Safe(dataBaseType, ConnString_R, ConnString_RW))
-            {
-                using (DbCommandCommon cmd = new DbCommandCommon(dataBaseType))
-                {
-                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, obj);
+                    PreparCommand(conn.DbConnection, cmd.DbCommand, commandTextOrSpName, commandType, dictionary);
                     using (DbDataAdapterCommon da = new DbDataAdapterCommon(dataBaseType, cmd.DbCommand))
                     {
                         DataSet ds = new DataSet();
@@ -406,13 +300,9 @@ namespace QX_Frame.Bantina
         {
             return GetListFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType));
         }
-        public static List<Entity> ExecuteList<Entity>(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms) where Entity : class
+        public static List<Entity> ExecuteList<Entity>(string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary) where Entity : class
         {
-            return GetListFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, parms));
-        }
-        public static List<Entity> ExecuteList<Entity>(string commandTextOrSpName, CommandType commandType, params object[] obj) where Entity : class
-        {
-            return GetListFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, obj));
+            return GetListFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, dictionary));
         }
         #endregion
 
@@ -421,38 +311,13 @@ namespace QX_Frame.Bantina
         {
             return GetEntityFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType));
         }
-        public static Entity ExecuteEntity<Entity>(string commandTextOrSpName, CommandType commandType, params DbParameter[] parms) where Entity : class
+        public static Entity ExecuteEntity<Entity>(string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary) where Entity : class
         {
-            return GetEntityFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, parms));
-        }
-        public static Entity ExecuteEntity<Entity>(string commandTextOrSpName, CommandType commandType, params object[] obj) where Entity : class
-        {
-            return GetEntityFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, obj));
+            return GetEntityFromDataSet<Entity>(ExecuteDataSet(commandTextOrSpName, commandType, dictionary));
         }
         #endregion
 
         #region ---PreparCommand 构建一个通用的command对象供内部方法进行调用---
-        /// <summary>
-        /// 不带参数的设置sqlcommand对象
-        /// </summary>
-        /// <param name="conn">sqlconnection对象</param>
-        /// <param name="cmd">sqlcommmand对象</param>
-        /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
-        /// <param name="commandType">语句的类型</param>
-        private static void PreparCommand(DbConnection conn, DbCommand cmd, string commandTextOrSpName, CommandType commandType)
-        {
-            //打开连接
-            if (conn.State != ConnectionState.Open)
-            {
-                conn.Open();
-            }
-
-            //设置SqlCommand对象的属性值
-            cmd.Connection = conn;
-            cmd.CommandType = commandType;
-            cmd.CommandText = commandTextOrSpName;
-            cmd.CommandTimeout = 60;
-        }
         /// <summary>
         /// 设置一个等待执行的SqlCommand对象
         /// </summary>
@@ -460,8 +325,8 @@ namespace QX_Frame.Bantina
         /// <param name="cmd">sqlcommmand对象</param>
         /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
         /// <param name="commandType">语句的类型</param>
-        /// <param name="parms">参数，sqlparameter类型，需要指出所有的参数名称</param>
-        private static void PreparCommand(DbConnection conn, DbCommand cmd, string commandTextOrSpName, CommandType commandType, params SqlParameter[] parms)
+        /// <param name="dictionary">参数，sqlparameter类型，需要指出所有的参数名称</param>
+        private static void PreparCommand(DbConnection conn, DbCommand cmd, string commandTextOrSpName, CommandType commandType, Dictionary<string,object> dictionary=null)
         {
             //打开连接
             if (conn.State != ConnectionState.Open)
@@ -475,39 +340,48 @@ namespace QX_Frame.Bantina
             cmd.CommandText = commandTextOrSpName;
             cmd.CommandTimeout = 60;
 
-            if (parms != null)
+            if (dictionary != null)
             {
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddRange(parms);
-            }
-        }
-        /// <summary>
-        /// PreparCommand方法，可变参数为object需要严格按照参数顺序传参
-        /// 之所以会用object参数方法是为了我们能更方便的调用存储过程，不必去关系存储过程参数名是什么，知道它的参数顺序就可以了 sqlparameter必须指定每一个参数名称
-        /// </summary>
-        /// <param name="conn">sqlconnection对象</param>
-        /// <param name="cmd">sqlcommmand对象</param>
-        /// <param name="commandTextOrSpName">sql语句或存储过程名称</param>
-        /// <param name="commandType">语句的类型</param>
-        /// <param name="parms">参数，object类型，需要按顺序赋值</param>
-        private static void PreparCommand(DbConnection conn, DbCommand cmd, string commandTextOrSpName, CommandType commandType, params object[] parms)
-        {
-            //打开连接
-            if (conn.State != ConnectionState.Open)
-            {
-                conn.Open();
-            }
+                DbParameter[] parameters;
+                switch (conn)
+                {
+                    case SqlConnection s:
+                        parameters = new SqlParameter[dictionary.Count];
+                        break;
+                    case MySqlConnection m:
+                        parameters = new MySqlParameter[dictionary.Count];
+                        break;
+                    case OracleConnection o:
+                        parameters = new OracleParameter[dictionary.Count];
+                        break;
+                    default:
+                        parameters = new SqlParameter[dictionary.Count];
+                        break;
+                }
 
-            //设置SqlCommand对象的属性值
-            cmd.Connection = conn;
-            cmd.CommandType = commandType;
-            cmd.CommandText = commandTextOrSpName;
-            cmd.CommandTimeout = 60;
+                string[] keyArray = dictionary.Keys.ToArray();
+                object[] valueArray = dictionary.Values.ToArray();
 
-            cmd.Parameters.Clear();
-            if (parms != null)
-            {
-                cmd.Parameters.AddRange(parms);
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    switch (conn)
+                    {
+                        case SqlConnection s:
+                            parameters[i] = new SqlParameter(keyArray[i], valueArray[i]);
+                            break;
+                        case MySqlConnection m:
+                            parameters[i] = new MySqlParameter(keyArray[i], valueArray[i]);
+                            break;
+                        case OracleConnection o:
+                            parameters[i] = new OracleParameter(keyArray[i], valueArray[i]);
+                            break;
+                        default:
+                            parameters[i] = new SqlParameter(keyArray[i], valueArray[i]);
+                            break;
+                    }
+                }
+                cmd.Parameters.AddRange(parameters);
             }
         }
         #endregion

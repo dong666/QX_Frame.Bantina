@@ -18,6 +18,16 @@ namespace QX_Frame.Bantina.Validation
 {
     public static class CheckFormatValidation
     {
+        /// <summary>
+        /// Check match regex string
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="regexString"></param>
+        /// <param name="international_errorCode"></param>
+        public static void CheckFromRegex(this string data, string regexString, int international_errorCode)
+        {
+            if (!data.IsCheckFromRegex(regexString)) { throw new Exception_DG_Internationalization(international_errorCode); }
+        }
         public static void CheckEmail(this string data, int international_errorCode)
         {
             if (!data.IsEmail()) { throw new Exception_DG_Internationalization(international_errorCode); }

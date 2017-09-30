@@ -17,6 +17,16 @@ namespace QX_Frame.Bantina.Validation
 {
     public static class FormatValidation
     {
+        /// <summary>
+        /// check match regex string
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="regexString"></param>
+        /// <returns></returns>
+        public static bool IsCheckFromRegex(this string data,string regexString)
+        {
+            return Regex.IsMatch(data, regexString);
+        }
         public static bool IsEmail(this string data)
         {
             return Regex.IsMatch(data, @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");

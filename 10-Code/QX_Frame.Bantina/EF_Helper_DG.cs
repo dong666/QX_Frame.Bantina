@@ -1,4 +1,18 @@
-﻿using LinqKit; //AsExpandable() in linqkit.dll
+﻿/*********************************************************
+ * CopyRight: QIXIAO CODE BUILDER. 
+ * Version:5.0.0
+ * Author:qixiao(柒小)
+ * Create:2016-10-30 15:26:05
+ * Address:wuhan.China
+ * Update:--
+ * E-mail: dong@qixiao.me | wd8622088@foxmail.com 
+ * GitHub: https://github.com/dong666 
+ * Personal web site: http://qixiao.me 
+ * Technical WebSit: http://www.cnblogs.com/qixiaoyizhan/ 
+ * Description:
+ * Thx , Best Regards ~
+ *********************************************************/
+using LinqKit; //AsExpandable() in linqkit.dll
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -41,7 +55,7 @@ namespace QX_Frame.Bantina
         #endregion
 
         #region get current dbContext
-        public static DbContext GetCurrentDbContext()
+        private static DbContext GetCurrentDbContext()
         {
             //method 1 : CallContext 该方法有有时候第一次访问不到的bug
             //CallContext：是线程内部唯一的独用的数据槽（一块内存空间）  
@@ -70,7 +84,7 @@ namespace QX_Frame.Bantina
         /// <summary>
         /// edit data cache must update
         /// </summary>
-        public static void CacheChanges<T>()
+        private static void CacheChanges<T>()
         {
             if (QX_Frame_Helper_DG_Config.Cache_IsCache)
             {
@@ -83,7 +97,7 @@ namespace QX_Frame.Bantina
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IQueryable<T> GetIQuerybleByCache<T>() where T : class
+        private static IQueryable<T> GetIQuerybleByCache<T>() where T : class
         {
             if (QX_Frame_Helper_DG_Config.Cache_IsCache)
             {

@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Data.Entity;
 using System.Transactions;
 using QX_Frame.Bantina.Configs;
+using System.Collections.Generic;
 
 namespace QX_Frame.Bantina
 {
@@ -134,7 +135,7 @@ namespace QX_Frame.Bantina
             outEntity = entity;
             return db.SaveChanges() > 0;
         }
-        public static Boolean Add<T>(IQueryable<T> entities) where T : class
+        public static Boolean Add<T>(IList<T> entities) where T : class
         {
             DbContext db = GetCurrentDbContext();
             CacheChanges<T>();
@@ -198,7 +199,7 @@ namespace QX_Frame.Bantina
             db.Set<T>().RemoveRange(entities);
             return db.SaveChanges() > 0;
         }
-        public static Boolean Delete<T>(Expression<Func<T, bool>> deleteWhere) where T : class
+        public static async System.Threading.Tasks.Task<bool> DeleteAsync<T>(Expression<Func<T, bool>> deleteWhere) where T : class
         {
             DbContext db = GetCurrentDbContext();
             CacheChanges<T>();
@@ -207,7 +208,7 @@ namespace QX_Frame.Bantina
              * change code 2017-5-6 11:11:19 qixiao
              * entitys.ForEach(m => db.Entry<T>(m).State = EntityState.Deleted);
              **/
-            entitys.ForEachAsync(m => db.Entry<T>(m).State = EntityState.Deleted);
+            await entitys.ForEachAsync(m => db.Entry<T>(m).State = EntityState.Deleted);
             return db.SaveChanges() > 0;
         }
         #endregion

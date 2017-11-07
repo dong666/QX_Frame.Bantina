@@ -20,6 +20,7 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             new ConfigBootStrap();
+
             //Dictionary<string, object> dataDic = new Dictionary<string, object>();
             //dataDic.Add("classid", "1");
 

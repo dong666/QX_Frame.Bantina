@@ -1297,7 +1297,9 @@ namespace QX_Frame.Bantina.Bankinate
 
             if (result != null)
                 HttpRuntimeCache_Helper_DG.Cache_Add(cacheKey, result);
+
             HttpRuntimeCache_Helper_DG.Cache_Delete(tableName);
+
             return result;
         }
 
@@ -1316,6 +1318,7 @@ namespace QX_Frame.Bantina.Bankinate
                 trans.Complete();
             }
         }
+
         #endregion
 
         #region Dispose
@@ -1323,8 +1326,11 @@ namespace QX_Frame.Bantina.Bankinate
         /// <summary>
         /// Dispose
         /// </summary>
-        public void Dispose() => GC.Collect();
 
+        public void Dispose()
+        {
+
+        }
         #endregion
     }
 }
